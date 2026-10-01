@@ -1,20 +1,21 @@
-export function getTeacher() {
+export function getTeachers() {
     let teacher = JSON.parse(localStorage.getItem('teachers')) || [];
     
    
-    if (!teacher) {
+    if (teachers.length === 0) {
       teacher.push({
-        id:0,
+        id:"T000",
         fullName:"mohammad haitham",
         degree:"Bachelor's CS",
         phone:"0788123413",
+        BD:"10-10-2000",
         password:"mo12345"
 
       })
         saveTeacher(teacher);
     }
     
-    return users;
+    return teacher;
 }
 
 

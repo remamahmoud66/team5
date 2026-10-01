@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduFlow - Teacher Dashboard</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside class="sidebar">
+
+        <!-- Logo -->
+        <div class="logo-area">
+
+            <div class="logo">
+                E
+            </div>
+
+            <div class="logo-text">
+                <h2>EduFlow</h2>
+                <span>Teacher Portal</span>
+            </div>
+
+        </div>
+
+
+        <!-- Sidebar Categories -->
+        <div class="sidebar-menu">
+
+            <p class="menu-title">ACADEMIC</p>
+
+            <a href="#" class="menu-item active">
+                <i class="fa-solid fa-table-cells"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-user-graduate"></i>
+                <span>Students</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-table"></i>
+                <span>Classes</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-regular fa-diamond"></i>
+                <span>Subjects</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-check"></i>
+                <span>Attendance</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-book"></i>
+                <span>Materials</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Homework</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-regular fa-diamond"></i>
+                <span>Exams</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-star"></i>
+                <span>Grades</span>
+            </a>
+
+            <a href="#" class="menu-item">
+                <i class="fa-solid fa-pen"></i>
+                <span>Notes</span>
+            </a>
+
+        </div>
+
+
+        <!-- User Area -->
+        <div class="sidebar-user">
+
+            <div class="user-avatar">
+                AK
+            </div>
+
+            <div class="user-info">
+                <strong>Ahmad Khaled</strong>
+                <span>Teacher</span>
+            </div>
+
+            <button class="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="top-header">
+
+            <div class="breadcrumb">
+                Teacher Portal
+                <span>/</span>
+                <strong>Dashboard</strong>
+            </div>
+
+            <div class="header-actions">
+
+                <button class="header-btn notification">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-count">3</span>
+                </button>
+
+                <button class="header-btn">
+                    <i class="fa-solid fa-user"></i>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- Page Content -->
+        <section class="page-content">
+
+
+            <!-- =========================
+                 WELCOME SECTION
+            ========================== -->
+
+            <section class="welcome-card">
+
+                <div class="welcome-content">
+
+                    <h1>
+                        Good evening, <span id="userName"></span>
+                        <span>👋</span>
+                    </h1>
+
+                    <p>
+                        Your academic workspace is ready.
+                        Manage classes, students, assignments, exams
+                        and attendance from one place.
+                    </p>
+
+                </div>
+
+                <button class="create-btn">
+                    <span>+</span>
+                    Create Homework
+                </button>
+
+            </section>
+
+
+
+            <!-- =========================
+                 DASHBOARD GRID
+            ========================== -->
+
+            <div class="dashboard-grid">
+                <!-- =========================
+                     WEATHER
+                ========================== -->
+
+                <section class="dashboard-card weather-card">
+
+                    <div class="card-header">
+                        <div>
+                            <h2>Weather — Amman</h2>
+                        </div>
+                    </div>
+
+                    <div class="weather-content">
+
+                        <div class="weather-icon">
+                            <i id="weatherIcon" class="fa-solid fa-sun"></i>
+                        </div>
+
+                        <div class="temperature">
+                            <strong id="temperature">Loading...</strong>
+
+                            <span id="weatherLocation">
+                                Amman · Loading...
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <p id="weatherDescription" class="weather-description">
+                        Loading weather data...
+                    </p>
+
+                </section>
+
+                <!-- =========================
+                     ATTENDANCE CHART
+                ========================== -->
+
+
+                <section class="dashboard-card attendance-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h2>Attendance Statistics</h2>
+                            <p>Students attendance by course</p>
+                        </div>
+
+                        <button class="more-btn">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+
+                    </div>
+
+
+                    <div class="attendance-content">
+
+                        <!-- CSS Circular Chart -->
+
+                        <div class="chart-container">
+
+                            <div class="attendance-chart" id="attendanceChart">
+
+                                <div class="chart-center">
+                                    <strong id="overallAttendance">0%</strong>
+                                    <span>Overall</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Course Statistics -->
+
+                        <div class="course-statistics" id="courseStatistics">
+
+                            <!-- JavaScript will add courses here -->
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+
+
+
+
+
+
+
+
+    </main>
+
+    <script src="../js/weather_api.js"></script>
+    <script type="module" src="../js/dashboard.js"></script>
+</body>
+
+</html>
