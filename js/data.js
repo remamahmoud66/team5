@@ -51,6 +51,14 @@ export function getCurrentTeacher() {
     const data = localStorage.getItem('currentTeacher') || sessionStorage.getItem('currentTeacher');
     return data ? JSON.parse(data) : null;
 }
+export function updateTeacher(updatedTeacher) {
+
+localStorage.setItem(
+    "currentTeacher",
+    JSON.stringify(updatedTeacher)
+);
+
+}
 export function logout() {
     localStorage.removeItem('currentTeacher'); 
     window.location.href = '../login.html'; 

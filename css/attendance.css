@@ -1,16 +1,10 @@
-```css
-/* ============================================================
-   ATTENDANCE PAGE
-   ============================================================ */
+
 
 .page-content {
     padding: 30px;
 }
 
 
-/* ============================================================
-   PAGE HEADER
-   ============================================================ */
 
 .page-header {
     display: flex;
@@ -33,9 +27,7 @@
 }
 
 
-/* ============================================================
-   CLASS SELECT
-   ============================================================ */
+
 
 .class-select {
     min-width: 220px;
@@ -65,9 +57,6 @@
 }
 
 
-/* ============================================================
-   ATTENDANCE SUMMARY
-   ============================================================ */
 
 .attendance-summary {
     display: grid;
@@ -112,9 +101,6 @@
 }
 
 
-/* ============================================================
-   ATTENDANCE TABLE
-   ============================================================ */
 
 .attendance-table-container {
     background-color: var(--color-surface);
@@ -133,9 +119,6 @@
 }
 
 
-/* ============================================================
-   TABLE HEADER
-   ============================================================ */
 
 .attendance-table thead {
     background-color: #f7f5ef;
@@ -154,9 +137,7 @@
 }
 
 
-/* ============================================================
-   TABLE BODY
-   ============================================================ */
+
 
 .attendance-table td {
     padding: 17px 20px;
@@ -180,9 +161,7 @@
 }
 
 
-/* ============================================================
-   STUDENT ID
-   ============================================================ */
+
 
 .attendance-table td:first-child {
     color: var(--color-muted);
@@ -190,9 +169,6 @@
 }
 
 
-/* ============================================================
-   ATTENDANCE STATUS
-   ============================================================ */
 
 .attendance-status {
     display: inline-flex;
@@ -210,7 +186,6 @@
 }
 
 
-/* Present */
 
 .attendance-status.present {
     color: #2f7d4a;
@@ -218,7 +193,6 @@
 }
 
 
-/* Absent */
 
 .attendance-status.absent {
     color: #c94a4a;
@@ -226,7 +200,7 @@
 }
 
 
-/* Not Recorded */
+
 
 .attendance-status.not.recorded {
     color: var(--color-muted);
@@ -234,9 +208,48 @@
 }
 
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+
+.attendance-toggle {
+    min-width: 90px;
+    padding: 7px 14px;
+    border: none;
+    border-radius: 20px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+
+.attendance-toggle.present {
+    color: #2f7d4a;
+    background-color: #eaf7ee;
+}
+
+
+.attendance-toggle.present:hover {
+    background-color: #d7f0df;
+}
+
+
+.attendance-toggle.absent {
+    color: #c94a4a;
+    background-color: #fdeeee;
+}
+
+
+.attendance-toggle.absent:hover {
+    background-color: #f9dada;
+}
+
+
+.attendance-toggle:active {
+    transform: scale(0.96);
+}
 
 @media (max-width: 1100px) {
 
@@ -272,4 +285,4 @@
     }
 
 }
-```
+

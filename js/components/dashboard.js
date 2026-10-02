@@ -1,4 +1,4 @@
-import {getCurrentTeacher} from "../data.js"
+import { getCurrentTeacher } from "../data.js";
 import { seedData } from "../seedData.js";
 import { loadWeather } from "../weather_api.js";
 
@@ -8,12 +8,9 @@ export function showDashboard(app) {
     console.log("App element:", app);
     console.log("Seed Data:", seedData);
 
-
-
     const teacher = getCurrentTeacher();
 
     console.log("Current teacher:", teacher);
-
 
     const attendance = seedData.attendance;
 
@@ -23,7 +20,6 @@ export function showDashboard(app) {
         item => item.status === "Present"
     ).length;
 
-
     const overallAttendance =
         totalAttendance > 0
             ? Math.round(
@@ -31,19 +27,15 @@ export function showDashboard(app) {
             )
             : 0;
 
-
-
     const courseStatistics = seedData.subjects.map(subject => {
 
         const subjectAttendance = attendance.filter(
             item => item.subjectId === subject.id
         );
 
-
         const present = subjectAttendance.filter(
             item => item.status === "Present"
         ).length;
-
 
         const percentage =
             subjectAttendance.length > 0
@@ -51,7 +43,6 @@ export function showDashboard(app) {
                     (present / subjectAttendance.length) * 100
                 )
                 : 0;
-
 
         return `
             <div class="course-item">
@@ -67,13 +58,12 @@ export function showDashboard(app) {
                         </strong>
 
                         <small>
-                            ${subject.code}
+                            ${subject.code || "Course"}
                         </small>
 
                     </div>
 
                 </div>
-
 
                 <strong class="percentage">
                     ${percentage}%
@@ -84,19 +74,15 @@ export function showDashboard(app) {
 
     }).join("");
 
-
-
     const firstClass = seedData.classes[0];
 
     const firstSubject = seedData.subjects.find(
         subject => subject.id === firstClass.subjectId
     );
 
-
     const firstExam = seedData.exams.find(
         exam => exam.classId === firstClass.id
     );
-
 
     const firstGrades = firstExam
         ? seedData.grades.filter(
@@ -104,15 +90,14 @@ export function showDashboard(app) {
         )
         : [];
 
-
     const calculateClassStats = (classId) => {
 
         const selectedClass = seedData.classes.find(
             classItem => classItem.id === classId
         );
 
-
         if (!selectedClass) {
+
             return {
                 subject: null,
                 exam: null,
@@ -123,18 +108,16 @@ export function showDashboard(app) {
                 gradedStudents: 0,
                 totalStudents: 0
             };
-        }
 
+        }
 
         const subject = seedData.subjects.find(
             item => item.id === selectedClass.subjectId
         );
 
-
         const exam = seedData.exams.find(
             item => item.classId === selectedClass.id
         );
-
 
         const grades = exam
             ? seedData.grades.filter(
@@ -142,18 +125,15 @@ export function showDashboard(app) {
             )
             : [];
 
-
         const totalMarks = grades.reduce(
             (sum, grade) => sum + grade.mark,
             0
         );
 
-
         const average =
             grades.length > 0
                 ? Math.round(totalMarks / grades.length)
                 : 0;
-
 
         const highest =
             grades.length > 0
@@ -162,14 +142,12 @@ export function showDashboard(app) {
                 )
                 : 0;
 
-
         const lowest =
             grades.length > 0
                 ? Math.min(
                     ...grades.map(grade => grade.mark)
                 )
                 : 0;
-
 
         return {
             subject: subject,
@@ -184,22 +162,15 @@ export function showDashboard(app) {
 
     };
 
-
-    
-
     const initialStats = calculateClassStats(
         firstClass.id
     );
-
-
-
 
     const classOptions = seedData.classes.map(classItem => {
 
         const subject = seedData.subjects.find(
             item => item.id === classItem.subjectId
         );
-
 
         return `
             <option value="${classItem.id}">
@@ -210,13 +181,9 @@ export function showDashboard(app) {
 
     }).join("");
 
-
- 
-
     app.innerHTML = `
 
         <section class="page-content">
-
 
             <!-- =========================
                  WELCOME
@@ -238,17 +205,13 @@ export function showDashboard(app) {
 
                     </h1>
 
-
                     <p>
-
                         Your academic workspace is ready.
                         Manage classes, students, assignments,
                         exams and attendance from one place.
-
                     </p>
 
                 </div>
-
 
                 <button
                     class="create-btn"
@@ -264,71 +227,89 @@ export function showDashboard(app) {
             </section>
 
 
+            <!-- =========================
+                 WEATHER
+            ========================== -->
+
+            <section class="dashboard-card weather-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Weather — Amman
+                        </h2>
+
+                        <p>
+                            Current weather conditions
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="weather-content">
+
+                    <div class="weather-icon">
+
+                        <i
+                            id="weatherIcon"
+                            class="fa-solid fa-sun"
+                        ></i>
+
+                    </div>
+
+
+                    <div class="temperature">
+
+                        <strong id="temperature">
+                            Loading...
+                        </strong>
+
+                        <span id="weatherLocation">
+                            Amman · Loading...
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <p
+                    id="weatherDescription"
+                    class="weather-description"
+                >
+                    Loading weather data...
+                </p>
+
+                <div class="hourly-section">
+
+    <h3>
+        Hourly Forecast
+    </h3>
+
+    <div
+        class="hourly-forecast"
+        id="hourlyForecast"
+    >
+
+        <div class="weather-loading">
+            Loading forecast...
+        </div>
+
+    </div>
+
+</div>
+            </section>
+
 
             <!-- =========================
                  DASHBOARD GRID
             ========================== -->
 
             <div class="dashboard-grid">
-
-
-                <!-- =========================
-                     WEATHER
-                ========================== -->
-
-                <section class="dashboard-card weather-card">
-
-                    <div class="card-header">
-
-                        <div>
-
-                            <h2>
-                                Weather — Amman
-                            </h2>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="weather-content">
-
-                        <div class="weather-icon">
-
-                            <i
-                                id="weatherIcon"
-                                class="fa-solid fa-sun"
-                            ></i>
-
-                        </div>
-
-
-                        <div class="temperature">
-
-                            <strong id="temperature">
-                                Loading...
-                            </strong>
-
-
-                            <span id="weatherLocation">
-                                Amman · Loading...
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <p
-                        id="weatherDescription"
-                        class="weather-description"
-                    >
-                        Loading weather data...
-                    </p>
-
-                </section>
-
-
 
                 <!-- =========================
                      ATTENDANCE
@@ -350,7 +331,6 @@ export function showDashboard(app) {
 
                         </div>
 
-
                         <button
                             class="more-btn"
                             type="button"
@@ -363,20 +343,14 @@ export function showDashboard(app) {
                     </div>
 
 
-
                     <div class="attendance-content">
-
-
-                        <!-- Chart -->
 
                         <div class="chart-container">
 
                             <div
                                 class="attendance-chart"
                                 id="attendanceChart"
-                                style="
-                                    --attendance: ${overallAttendance}%;
-                                "
+                                style="--attendance: ${overallAttendance}%;"
                             >
 
                                 <div class="chart-center">
@@ -396,9 +370,6 @@ export function showDashboard(app) {
                         </div>
 
 
-
-                        <!-- Course Statistics -->
-
                         <div
                             class="course-statistics"
                             id="courseStatistics"
@@ -408,14 +379,11 @@ export function showDashboard(app) {
 
                         </div>
 
-
                     </div>
 
                 </section>
 
-
             </div>
-
 
 
             <!-- =====================================================
@@ -423,11 +391,6 @@ export function showDashboard(app) {
             ====================================================== -->
 
             <section class="dashboard-card class-performance-card">
-
-
-                <!-- =========================
-                     CARD HEADER
-                ========================== -->
 
                 <div class="card-header">
 
@@ -444,8 +407,6 @@ export function showDashboard(app) {
                     </div>
 
 
-                    <!-- Class Selector -->
-
                     <select
                         id="classPerformanceSelect"
                         class="class-select"
@@ -456,7 +417,6 @@ export function showDashboard(app) {
                     </select>
 
                 </div>
-
 
 
                 <!-- =========================
@@ -470,11 +430,12 @@ export function showDashboard(app) {
                     </h3>
 
                     <p id="selectedSubjectName">
-                        ${firstSubject ? firstSubject.name : "No subject"}
+                        ${firstSubject
+            ? firstSubject.name
+            : "No subject"}
                     </p>
 
                 </div>
-
 
 
                 <!-- =========================
@@ -485,9 +446,6 @@ export function showDashboard(app) {
                     class="performance-stats"
                     id="performanceStats"
                 >
-
-
-                    <!-- Average -->
 
                     <div class="performance-stat">
 
@@ -500,7 +458,6 @@ export function showDashboard(app) {
                         </strong>
 
                     </div>
-
 
 
                     <div class="performance-stat">
@@ -516,8 +473,6 @@ export function showDashboard(app) {
                     </div>
 
 
-                    <!-- Lowest -->
-
                     <div class="performance-stat">
 
                         <span>
@@ -530,8 +485,6 @@ export function showDashboard(app) {
 
                     </div>
 
-
-                    <!-- Students -->
 
                     <div class="performance-stat">
 
@@ -550,7 +503,6 @@ export function showDashboard(app) {
                 </div>
 
 
-
                 <!-- =========================
                      STUDENT MARKS
                 ========================== -->
@@ -564,14 +516,11 @@ export function showDashboard(app) {
 
                 </div>
 
-
             </section>
-
 
         </section>
 
     `;
-
 
 
     loadWeather();
@@ -580,7 +529,6 @@ export function showDashboard(app) {
     console.log(
         "Dashboard rendered successfully"
     );
-
 
 
     const classPerformanceSelect =
@@ -596,14 +544,12 @@ export function showDashboard(app) {
             const selectedClassId =
                 classPerformanceSelect.value;
 
-
             const stats =
                 calculateClassStats(
                     selectedClassId
                 );
 
 
-            // Find selected class
             const selectedClass =
                 seedData.classes.find(
                     classItem =>
@@ -611,7 +557,6 @@ export function showDashboard(app) {
                 );
 
 
-            // Update class name
             document.getElementById(
                 "selectedClassName"
             ).textContent =
@@ -620,7 +565,6 @@ export function showDashboard(app) {
                     : "No class";
 
 
-            // Update subject name
             document.getElementById(
                 "selectedSubjectName"
             ).textContent =
@@ -629,35 +573,30 @@ export function showDashboard(app) {
                     : "No subject";
 
 
-            // Update average
             document.getElementById(
                 "averageMark"
             ).textContent =
                 `${stats.average}%`;
 
 
-            // Update highest
             document.getElementById(
                 "highestMark"
             ).textContent =
                 stats.highest;
 
 
-            // Update lowest
             document.getElementById(
                 "lowestMark"
             ).textContent =
                 stats.lowest;
 
 
-            // Update graded students
             document.getElementById(
                 "gradedStudents"
             ).textContent =
                 `${stats.gradedStudents} / ${stats.totalStudents}`;
 
 
-            // Update students marks
             document.getElementById(
                 "studentPerformance"
             ).innerHTML =
@@ -667,8 +606,6 @@ export function showDashboard(app) {
 
         }
     );
-
-
 
 
     const createHomeworkBtn =
@@ -693,8 +630,6 @@ export function showDashboard(app) {
     }
 
 }
-
-
 
 
 function renderStudentMarks(grades) {
