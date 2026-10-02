@@ -1,6 +1,8 @@
 
 import { showDashboard } from "./components/dashboard.js";
 import { showAttendance } from "./components/attendance.js";
+import { showProfile } from "./components/profile.js";
+import {logout} from "./data.js";
 
 
 // =========================================================
@@ -73,6 +75,13 @@ function loadPage(page) {
 
     }
 
+    if (page == "logout") {
+
+        logout();
+
+
+    }
+
 
 
 }
@@ -115,9 +124,10 @@ menuItems.forEach(item => {
 });
 
 
-// =========================================================
-// INITIAL PAGE
-// =========================================================
+const logoutButton = document.querySelector(".sidebar-logout .logout-btn"); if (logoutButton) { logoutButton.addEventListener("click", event => { event.preventDefault(); logout(); }); } else { console.error("ERROR: Logout button was not found!"); }
+
+
+const profileButton = document.querySelector(".user-profile"); if (profileButton) { profileButton.addEventListener("click", () => { showProfile(app); }); }
 
 loadPage("dashboard");
 

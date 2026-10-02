@@ -30,19 +30,15 @@ export function loadWeather() {
 
             console.log("Current weather:", weatherData);
 
-            // Display temperature
             temperature.textContent =
                 weatherData.temperature_2m + "°C";
 
-            // Display location
             locationText.textContent =
                 "Amman · Live API data";
 
-            // Display weather description
             description.textContent =
                 getWeatherDescription(weatherData.weather_code);
 
-            // Display weather emoji
             weatherIcon.textContent =
                 getWeatherEmoji(weatherData.weather_code);
         })
@@ -58,7 +54,6 @@ export function loadWeather() {
 }
 
 
-// Convert weather code to description
 function getWeatherDescription(code) {
     if (code === 0) return "Clear sky";
     if (code >= 1 && code <= 3) return "Partly cloudy";
@@ -73,7 +68,6 @@ function getWeatherDescription(code) {
 }
 
 
-// Convert weather code to emoji
 function getWeatherEmoji(code) {
     if (code === 0) return "☀️";
 

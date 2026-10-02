@@ -36,5 +36,5 @@ export function getCurrentTeacher() {
 
 export function logout() {
     localStorage.removeItem('currentTeacher'); 
-    window.location.href = 'login.html'; 
+    window.location.href = '../login.html'; 
 }
