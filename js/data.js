@@ -1,39 +1,17 @@
-export function getTeacher() {
-    let teacher = JSON.parse(localStorage.getItem('teachers')) || [];
-    
-   
-    if (!teacher) {
-      teacher.push({
-        id:0,
-        fullName:"mohammad haitham",
-        degree:"Bachelor's CS",
-        phone:"0788123413",
-        password:"mo12345"
+const TEACHER_KEY = 'teachers';
 
-      })
-        saveTeacher(teacher);
-    }
-    
-    return users;
+export function getTeachers() {
+    const data = localStorage.getItem(TEACHER_KEY);
+    return data ? JSON.parse(data) : [];
 }
 
-
-export function saveTeacher(teacherArray) {
-    localStorage.setItem('teachers', JSON.stringify(teacherArray));
-}
-
-
-
-export function setCurrentteacher(teacher) {
-    localStorage.setItem('currentTeacher', JSON.stringify(teacher));
+export function saveTeachers(teacherObj) {
+    const teachers = getTeachers();
+    teachers.push(teacherObj);
+    localStorage.setItem(TEACHER_KEY , JSON.stringify(teachers));
 }
 
 export function getCurrentTeacher() {
-    return JSON.parse(localStorage.getItem('currentTeacher'));
-}
-
-
-export function logout() {
-    localStorage.removeItem('currentTeacher'); 
-    window.location.href = 'login.html'; 
+    const data = localStorage.getItem('currentTeacher') || sessionStorage.getItem('currentTeacher');
+    return data ? JSON.parse(data) : null;
 }
