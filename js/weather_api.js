@@ -17,7 +17,7 @@ export function loadWeather() {
         "&current=temperature_2m,weather_code" +
         "&timezone=Asia%2FAmman";
 
-    fetch(url)
+     fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error("Weather API request failed");

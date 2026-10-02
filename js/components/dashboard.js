@@ -1,4 +1,4 @@
-
+import {getCurrentTeacher} from "../data.js"
 import { seedData } from "../seedData.js";
 import { loadWeather } from "../weather_api.js";
 
@@ -9,18 +9,11 @@ export function showDashboard(app) {
     console.log("Seed Data:", seedData);
 
 
-    // =========================================================
-    // DASHBOARD DATA
-    // =========================================================
 
-    const teacher = seedData.teachers[0];
+    const teacher = getCurrentTeacher();
 
     console.log("Current teacher:", teacher);
 
-
-    // =========================================================
-    // ATTENDANCE DATA
-    // =========================================================
 
     const attendance = seedData.attendance;
 
@@ -39,9 +32,6 @@ export function showDashboard(app) {
             : 0;
 
 
-    // =========================================================
-    // COURSE STATISTICS
-    // =========================================================
 
     const courseStatistics = seedData.subjects.map(subject => {
 
@@ -95,11 +85,7 @@ export function showDashboard(app) {
     }).join("");
 
 
-    // =========================================================
-    // CLASS PERFORMANCE DATA
-    // =========================================================
 
-    // Use the first class as the default selected class
     const firstClass = seedData.classes[0];
 
     const firstSubject = seedData.subjects.find(
@@ -119,7 +105,6 @@ export function showDashboard(app) {
         : [];
 
 
-    // Calculate statistics for the first class
     const calculateClassStats = (classId) => {
 
         const selectedClass = seedData.classes.find(
@@ -141,19 +126,16 @@ export function showDashboard(app) {
         }
 
 
-        // Find the subject of this class
         const subject = seedData.subjects.find(
             item => item.id === selectedClass.subjectId
         );
 
 
-        // Find the exam of this class
         const exam = seedData.exams.find(
             item => item.classId === selectedClass.id
         );
 
 
-        // Get grades belonging to this exam
         const grades = exam
             ? seedData.grades.filter(
                 grade => grade.examId === exam.id
@@ -161,7 +143,6 @@ export function showDashboard(app) {
             : [];
 
 
-        // Calculate average
         const totalMarks = grades.reduce(
             (sum, grade) => sum + grade.mark,
             0
@@ -174,7 +155,6 @@ export function showDashboard(app) {
                 : 0;
 
 
-        // Highest mark
         const highest =
             grades.length > 0
                 ? Math.max(
@@ -183,7 +163,6 @@ export function showDashboard(app) {
                 : 0;
 
 
-        // Lowest mark
         const lowest =
             grades.length > 0
                 ? Math.min(
@@ -206,18 +185,14 @@ export function showDashboard(app) {
     };
 
 
-    // =========================================================
-    // INITIAL CLASS STATISTICS
-    // =========================================================
+    
 
     const initialStats = calculateClassStats(
         firstClass.id
     );
 
 
-    // =========================================================
-    // CLASS OPTIONS
-    // =========================================================
+
 
     const classOptions = seedData.classes.map(classItem => {
 
@@ -236,9 +211,7 @@ export function showDashboard(app) {
     }).join("");
 
 
-    // =========================================================
-    // RENDER DASHBOARD
-    // =========================================================
+ 
 
     app.innerHTML = `
 
@@ -529,7 +502,6 @@ export function showDashboard(app) {
                     </div>
 
 
-                    <!-- Highest -->
 
                     <div class="performance-stat">
 
@@ -601,9 +573,6 @@ export function showDashboard(app) {
     `;
 
 
-    // =========================================================
-    // LOAD WEATHER
-    // =========================================================
 
     loadWeather();
 
@@ -613,9 +582,6 @@ export function showDashboard(app) {
     );
 
 
-    // =========================================================
-    // CLASS PERFORMANCE SELECT
-    // =========================================================
 
     const classPerformanceSelect =
         document.getElementById(
@@ -703,9 +669,7 @@ export function showDashboard(app) {
     );
 
 
-    // =========================================================
-    // CREATE HOMEWORK BUTTON
-    // =========================================================
+
 
     const createHomeworkBtn =
         document.getElementById(
@@ -732,9 +696,6 @@ export function showDashboard(app) {
 
 
 
-// =============================================================
-// RENDER STUDENT MARKS
-// =============================================================
 
 function renderStudentMarks(grades) {
 

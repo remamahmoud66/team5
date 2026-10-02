@@ -1,16 +1,25 @@
+import {getCurrentTeacher} from "../data.js"
 
 export function showProfile(app) {
+const teacher = getCurrentTeacher();
+const splitedName= teacher.fullName.split(' ');
+const firstName= splitedName[0] ;
+const secondName= splitedName[1] ;
 
     app.innerHTML = `
         <section class="profile-page">
 
             <div class="profile-header">
                 <div class="profile-avatar">
-                    SJ
+                    ${
+                        firstName[0]}
+                        ${secondName[0]}
+                        
+                    
                 </div>
 
                 <div class="profile-title">
-                    <h1>Sarah Jenkins</h1>
+                    <h1>${teacher.fullName}</h1>
                     <p>Curriculum Lead</p>
                 </div>
 

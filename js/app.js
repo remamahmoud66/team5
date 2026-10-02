@@ -1,18 +1,17 @@
-
 import { showDashboard } from "./components/dashboard.js";
 import { showAttendance } from "./components/attendance.js";
 import { showProfile } from "./components/profile.js";
-import {logout} from "./data.js";
+import {logout , getCurrentTeacher} from "./data.js";
 
-
-// =========================================================
-// APP ELEMENT
-// =========================================================
+const teacher= getCurrentTeacher();
+const splitedName= teacher.fullName.split(' ');
+const firstName= splitedName[0] ;
+const secondName= splitedName[1] ;
 
 const app = document.getElementById("app");
 
 
-// Check if app exists
+
 if (!app) {
 
     console.error(
@@ -22,9 +21,6 @@ if (!app) {
 }
 
 
-// =========================================================
-// NAVIGATION
-// =========================================================
 
 const menuItems =
     document.querySelectorAll(".nav-link");
@@ -33,9 +29,6 @@ const menuItems =
 console.log("Menu items:", menuItems.length);
 
 
-// =========================================================
-// LOAD PAGE
-// =========================================================
 
 function loadPage(page) {
 
@@ -87,19 +80,14 @@ function loadPage(page) {
 }
 
 
-// =========================================================
-// SIDEBAR CLICK
-// =========================================================
 
 menuItems.forEach(item => {
 
     item.addEventListener("click", event => {
 
-        // Prevent changing the URL
         event.preventDefault();
 
 
-        // Remove active class
         menuItems.forEach(menuItem => {
 
             menuItem.classList.remove("active");
@@ -107,16 +95,13 @@ menuItems.forEach(item => {
         });
 
 
-        // Add active class to clicked item
         item.classList.add("active");
 
 
-        // Get page name
         const page =
             item.dataset.page;
 
 
-        // Load page
         loadPage(page);
 
     });
@@ -129,5 +114,9 @@ const logoutButton = document.querySelector(".sidebar-logout .logout-btn"); if (
 
 const profileButton = document.querySelector(".user-profile"); if (profileButton) { profileButton.addEventListener("click", () => { showProfile(app); }); }
 
+const profileName=document.getElementById("profileName");
+profileName.textContent=teacher.fullName;
+const avatar= document.getElementById("avatar");
+avatar.textContent=`${firstName[0]}${secondName[0]}`;
 loadPage("dashboard");
 
