@@ -5,8 +5,8 @@ const fullName        = document.getElementById('fullName');
 const fullNameMessage = document.querySelector('.fullName-message');
 const birthDate       = document.getElementById('birthDate');
 const birthDateMessage   = document.querySelector('.birthDate-message');
-const degree          = document.getElementById('degree');
-const degreeMessage          = document.querySelector('.degree-message');
+const degree  = document.getElementById('degree');
+const degreeMessage   = document.querySelector('.degree-message');
 const phone           = document.getElementById('phone');
 const phoneMessage    = document.querySelector('.phone-message');
 const email           = document.getElementById('email');
@@ -14,7 +14,7 @@ const emailMessage    = document.querySelector('.email-message');
 const password        = document.getElementById('password');
 const passwordMessage = document.querySelector('.password-message');
 const confirmPassword  = document.getElementById('confirmPassword');
-const confirmPasswordMessage        = document.querySelector('.confirmPassword-message');
+const confirmPasswordMessage  = document.querySelector('.confirmPassword-message');
 const loginBtn = document.querySelector('.login-btn');
 
 const notyf = new Notyf({
@@ -75,7 +75,7 @@ registerForm.addEventListener('submit', (event) => {
     notyf.success('Account created successfully!');
     
     setTimeout(()=>{
-        window.location.href = '../pages/login.html';
+        window.location.href = '../login.html';
     }, 1200)
 
     registerForm.reset();
@@ -320,5 +320,5 @@ confirmPassword.addEventListener('focus', () => {
 
 loginBtn.addEventListener('click',(event)=>{
     event.preventDefault();
-    window.location.href = '../pages/login.html';
-});
+    window.location.href = '../login.html';
+}); 
