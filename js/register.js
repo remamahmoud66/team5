@@ -75,7 +75,7 @@ registerForm.addEventListener('submit', (event) => {
     notyf.success('Account created successfully!');
     
     setTimeout(()=>{
-        window.location.href = '../login.html';
+        window.location.href = './login.html';
     }, 1200)
 
     registerForm.reset();
