@@ -12,7 +12,7 @@ main {
     display: flex;
     width: 100%;
     max-width: 1000px;
-    height: 640px; /* ارتفاع ثابت ومتناسق يمنع السكرول */
+    height: 640px; 
     background-color: var(--surface);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
@@ -54,6 +54,11 @@ figure img {
     margin-bottom: var(--space-3);
 }
 
+ .logo img{
+    height: 50px;
+    position: relative;
+    left: 43.2%;
+}
 
 .login-register-container {
     display: flex;

@@ -45,6 +45,12 @@ figure img {
     background-color: var(--surface);
 }
 
+.logo img{
+    height: 50px;
+    position: relative;
+    left: 43.2%;
+}
+
 .login-section h1 {
     font-size: 28px;
     font-weight: 700;
