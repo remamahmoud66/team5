@@ -6,10 +6,10 @@
 
     <title>EVOLVIA - Learning Management Dashboard</title>
 
-    <link rel="preconnect" href="https: fonts.googleapis.com" />
-    <link rel="preconnect" href="https: fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https: fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"/>
     <link rel="stylesheet" href="/global.css" />
     <link rel="stylesheet" href="/style.css" />
@@ -36,7 +36,7 @@
           <a href="#dashboard" class="nav-link">
             <svg viewBox="0 0 24 24">
               <path
-                d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+                d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3H3-8z"
               />
             </svg>
             Dashboard
@@ -60,7 +60,7 @@
             Subjects
           </a>
 
-          <a href="#classes" class="nav-link active">
+          <a href="../classes/classes.html" class="nav-link active">
             <svg viewBox="0 0 24 24">
               <path
                 d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4l7 3.82 7-3.82v-4L12 17l-7-3.82z"
@@ -97,12 +97,12 @@
           </a>
         </nav>
       </div>
-      <div class="sidebar-card">
-        <div class="sidebar-card-title">Spring Term</div>
-        <div class="sidebar-card-body">
-          Midterm exam schedules have been finalized for all departments.
-        </div>
-      </div>
+      <a href="login.html" class="logout-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+        </svg>
+        Log Out
+      </a>
     </aside>
 
     <div class="content-wrapper">
@@ -114,51 +114,92 @@
         </nav>
 
         <div class="header-actions">
-          <a href="login.html" class="logout-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-              />
-            </svg>
-            Log Out
-          </a>
+          <!-- Notification Bell & Dropdown -->
+          <div class="notification-wrapper">
+            <button id="notification-bell-btn" class="bell-btn" title="Notifications">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span id="notification-badge" class="notification-badge hidden">0</span>
+            </button>
+
+            <div id="notification-dropdown" class="notification-dropdown hidden">
+              <div class="dropdown-header">
+                <h6>Notifications</h6>
+                <button id="mark-all-read-btn" class="btn-text">Mark all as read</button>
+              </div>
+
+              <div id="notification-list" class="notification-list">
+                <!-- Populated dynamically -->
+              </div>
+
+              <div class="dropdown-footer">
+                <a href="#notifications">View All Notifications</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="user-profile">
+            <div class="avatar">SJ</div>
+
+            <div class="user-info">
+              <span class="user-name"> Sarah Jenkins </span>
+              <span class="user-role"> Curriculum Lead </span>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main class="main-content">
-        <header class="page-header">
-          <div>
+      <main id="main-content" class="main-content">
+        <!-- Page header card -->
+        <section class="page-header-box">
+          <div class="page-header-text">
             <h1>Materials</h1>
             <p>Share learning resources with the right class.</p>
           </div>
-          <button class="btn btn-primary" id="openAddMaterialModal">+ Add Material</button>
-        </header>
+          <div class="page-header-actions">
+            <a href="../classes/classes.html" class="btn btn-secondary back-btn">&larr; Back</a>
+            <button class="btn add-material-btn" id="openAddMaterialModal">+ Add Material</button>
+          </div>
+        </section>
 
-        <div class="search-box" style="margin-bottom: var(--space-lg);">
-          <input type="text" id="searchMaterialInput" placeholder="Search materials by title...">
+        <!-- Search + class filter toolbar -->
+        <div class="materials-toolbar">
+          <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="searchMaterialInput" placeholder="Search materials by name...">
+          </div>
+
+          <select id="classFilter" class="class-select">
+            <option value="">All</option>
+          </select>
         </div>
 
-        <div class="table-container" style="background: var(--color-surface, #fff); border-radius: var(--radius-md, 8px); box-shadow: var(--shadow-sm); overflow: hidden;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <!-- Table Container matching classes style -->
+        <div class="table-container">
+          <table class="materials-table">
             <thead>
-              <tr style="border-bottom: 1px solid var(--color-border); color: var(--color-muted); font-size: 13px;">
-                <th style="padding: 16px;">RESOURCE</th>
-                <th style="padding: 16px;">TYPE</th>
-                <th style="padding: 16px;">CLASS</th>
-                <th style="padding: 16px;">CREATED</th>
-                <th style="padding: 16px;">ACTIONS</th>
+              <tr>
+                <th>#</th>
+                <th>RESOURCE</th>
+                <th>TYPE</th>
+                <th>CLASS</th>
+                <th>CREATED</th>
+                <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody id="materialsTableBody">
+              <!-- Dynamically populated rows will appear here inside the table -->
             </tbody>
           </table>
-        </div>
-
-        <div id="emptyMaterialsState" class="hidden" style="text-align: center; padding: 40px;">
-          <p style="color: var(--color-muted);">No materials found.</p>
+          <div id="emptyMaterialsState" class="empty-state hidden">
+            <p>No materials found.</p>
+          </div>
         </div>
       </main>
 
+      <!-- Add Material modal -->
       <div class="modal-overlay" id="addMaterialModal">
         <div class="modal-box">
           <div class="modal-header">
@@ -173,34 +214,41 @@
 
             <div class="form-group">
               <label for="materialDescInput">Description</label>
-              <textarea id="materialDescInput" placeholder="Brief description of the material..." style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 6px; height: 90px; outline: none;"></textarea>
+              <textarea id="materialDescInput" placeholder="Brief description of the material..."></textarea>
             </div>
 
-            <div class="form-row" style="display: flex; gap: 12px;">
-              <div class="form-group" style="flex: 1;">
-                <label for="materialTypeSelect">Type</label>
-                <select id="materialTypeSelect" style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 6px;">
-                  <option value="PDF">PDF</option>
-                  <option value="LINK">LINK</option>
-                </select>
-              </div>
-              <div class="form-group" style="flex: 1;">
-                <label for="materialClassSelect">Class</label>
-                <select id="materialClassSelect" style="width: 100%; padding: 10px; border: 1px solid var(--color-border); border-radius: 6px;" required>
-                </select>
-              </div>
+            <div class="form-group">
+              <label for="materialFileInput">File</label>
+              <label class="file-drop" id="fileDropZone" for="materialFileInput">
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true">
+                  <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z" />
+                </svg>
+                <span class="file-drop-title" id="fileDropTitle">Click to choose a file or drag it here</span>
+                <span class="file-drop-hint">PDF, Word, PowerPoint, Excel, ZIP or images</span>
+              </label>
+              <input type="file" id="materialFileInput" class="file-input-hidden" required
+                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip,.txt,.png,.jpg,.jpeg">
             </div>
 
-            <div class="form-group" style="margin-top: 12px;">
-              <label for="materialLinkInput">Resource URL / Link</label>
-              <input type="url" id="materialLinkInput" required placeholder="https: example.com/file.pdf">
-            </div>
-
-            <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <div class="modal-actions">
               <button type="button" class="btn btn-secondary" id="cancelMaterialModalBtn">Cancel</button>
-              <button type="submit" class="btn btn-primary" style="background-color: #f97316; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">Save Material</button>
+              <button type="submit" class="btn btn-primary save-material-btn">Save Material</button>
             </div>
           </form>
+        </div>
+      </div>
+
+      <!-- Delete confirmation modal -->
+      <div class="modal-overlay" id="confirmDeleteModal">
+        <div class="modal-box confirm-box">
+          <div class="modal-header">
+            <h2>Delete Material</h2>
+          </div>
+          <p class="confirm-text">Are you sure you want to delete this material?</p>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="confirmCancelBtn">Cancel</button>
+            <button type="button" class="confirm-delete-btn" id="confirmDeleteBtn">Delete</button>
+          </div>
         </div>
       </div>
 
@@ -210,6 +258,45 @@
       </footer>
     </div>
 
-    <script src="materials.js"></script>
+    <script>
+      (function () {
+        var input = document.getElementById("materialFileInput");
+        var zone = document.getElementById("fileDropZone");
+        var title = document.getElementById("fileDropTitle");
+        var form = document.getElementById("addMaterialForm");
+        var defaultText = title.textContent;
+
+        function showName() {
+          title.textContent = input.files.length ? input.files[0].name : defaultText;
+          zone.classList.toggle("has-file", input.files.length > 0);
+        }
+
+        input.addEventListener("change", showName);
+
+        ["dragenter", "dragover"].forEach(function (ev) {
+          zone.addEventListener(ev, function (e) {
+            e.preventDefault();
+            zone.classList.add("dragging");
+          });
+        });
+        ["dragleave", "drop"].forEach(function (ev) {
+          zone.addEventListener(ev, function (e) {
+            e.preventDefault();
+            zone.classList.remove("dragging");
+          });
+        });
+        zone.addEventListener("drop", function (e) {
+          if (e.dataTransfer.files.length) {
+            input.files = e.dataTransfer.files;
+            showName();
+          }
+        });
+
+        form.addEventListener("reset", function () {
+          setTimeout(showName, 0);
+        });
+      })();
+    </script>
+    <script type="module" src="materials.js"></script>
   </body>
 </html>
