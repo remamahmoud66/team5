@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>EVOLVIA - Attendance</title>
+    <title>EVOLVIA - Profile</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,7 +16,6 @@
 
     <link rel="stylesheet" href="../css/App.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
-    <link rel="stylesheet" href="../css/attendance.css" />
     <link rel="stylesheet" href="../css/profile.css" />
 </head>
 
@@ -27,16 +26,13 @@
         <div>
 
             <div class="brand-header">
-
                 <div class="brand-icon">
                     <img src="../assets/imgs/logo.png" alt="EVOLVIA Logo" />
                 </div>
-
                 <div class="brand-text">
                     EVOLVIA
                     <span class="brand-sub">Academy System</span>
                 </div>
-
             </div>
 
             <nav class="nav-menu">
@@ -73,7 +69,7 @@
                     <span>Exams</span>
                 </a>
 
-                <a href="./attendance.html" class="nav-link active" data-page="attendance">
+                <a href="./attendance.html" class="nav-link" data-page="attendance">
                     <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2V6c0-1.1-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z" /></svg>
                     <span>Attendance</span>
                 </a>
@@ -100,7 +96,7 @@
             <nav class="breadcrumb">
                 <a href="./dashboard.html">Dashboard</a>
                 <span class="breadcrumb-separator">/</span>
-                <span class="breadcrumb-current">Attendance</span>
+                <span class="breadcrumb-current">Profile</span>
             </nav>
 
             <div class="header-actions">
@@ -126,47 +122,95 @@
 
         <main id="app">
 
-            <section class="page-content">
+            <!-- VIEW MODE -->
+            <section class="profile-page" id="profileView">
 
-                <div class="page-header">
-                    <div>
-                        <h1>Attendance</h1>
-                        <p>Track and manage student attendance.</p>
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar"></div>
+                    <div class="profile-title">
+                        <h1 id="profileFullName"></h1>
+                        <p>Teacher</p>
                     </div>
-                    <select id="classSelect" class="class-select"></select>
+                    <button class="edit-profile-btn" id="editProfileBtn">Edit Profile</button>
                 </div>
 
-                <div class="attendance-summary">
-                    <div class="summary-card">
-                        <h3>Class</h3>
-                        <p id="summaryClass"></p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Total Students</h3>
-                        <p id="summaryStudents"></p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Present</h3>
-                        <p id="summaryPresent"></p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Attendance</h3>
-                        <p id="summaryPercentage"></p>
+                <div class="profile-content">
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h2>Personal Information</h2>
+                            <p>Your personal account information</p>
+                        </div>
+                        <div class="profile-grid">
+                            <div class="profile-field">
+                                <span>Full Name</span>
+                                <strong id="fieldFullName"></strong>
+                            </div>
+                            <div class="profile-field">
+                                <span>Email Address</span>
+                                <strong id="fieldEmail"></strong>
+                            </div>
+                            <div class="profile-field">
+                                <span>Phone Number</span>
+                                <strong id="fieldPhone"></strong>
+                            </div>
+                            <div class="profile-field">
+                                <span>Role</span>
+                                <strong>Teacher</strong>
+                            </div>
+                            <div class="profile-field">
+                                <span>Department</span>
+                                <strong>Academic Affairs</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="attendance-table-container">
-                    <table class="attendance-table">
-                        <thead>
-                            <tr>
-                                <th>Student ID</th>
-                                <th>Student Name</th>
-                                <th>Grade</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attendanceTableBody"></tbody>
-                    </table>
+            </section>
+
+            <!-- EDIT MODE (hidden by default) -->
+            <section class="profile-page" id="profileEdit" style="display: none;">
+
+                <div class="profile-header">
+                    <div class="profile-avatar" id="editProfileAvatar"></div>
+                    <div class="profile-title">
+                        <h1>Edit Profile</h1>
+                        <p>Update your personal information</p>
+                    </div>
+                </div>
+
+                <div class="profile-content">
+                    <div class="profile-card">
+                        <div class="card-header">
+                            <h2>Personal Information</h2>
+                            <p>Update your account information</p>
+                        </div>
+                        <div class="profile-grid">
+                            <div class="profile-field">
+                                <span>Full Name</span>
+                                <input type="text" id="fullNameInput" />
+                            </div>
+                            <div class="profile-field">
+                                <span>Email Address</span>
+                                <input type="email" id="emailInput" />
+                            </div>
+                            <div class="profile-field">
+                                <span>Phone Number</span>
+                                <input type="text" id="phoneInput" />
+                            </div>
+                            <div class="profile-field">
+                                <span>Role</span>
+                                <strong>Teacher</strong>
+                            </div>
+                            <div class="profile-field">
+                                <span>Department</span>
+                                <strong>Academic Affairs</strong>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="save-profile-btn" id="saveProfileBtn">Save Changes</button>
+                            <button class="cancel-profile-btn" id="cancelProfileBtn">Cancel</button>
+                        </div>
+                    </div>
                 </div>
 
             </section>
@@ -180,7 +224,7 @@
 
     </div>
 
-    <script type="module" src="../js/pages/attendance.js"></script>
+    <script type="module" src="../js/pages/profile.js"></script>
 
 </body>
 

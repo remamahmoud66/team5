@@ -60,6 +60,9 @@ localStorage.setItem(
 
 }
 export function logout() {
-    localStorage.removeItem('currentTeacher'); 
-    window.location.href = '../login.html'; 
+    localStorage.removeItem('currentTeacher');
+    sessionStorage.removeItem('currentTeacher');
+    // Works from both root and pages/ directory
+    const isInPages = window.location.pathname.includes('/pages/');
+    window.location.href = isInPages ? '../login.html' : './login.html';
 }
