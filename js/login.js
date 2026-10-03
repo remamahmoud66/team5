@@ -1,9 +1,8 @@
-
 import { getTeachers ,  getCurrentTeacher } from './data.js';
 
 const loginForm = document.querySelector('.login-form');
 const email = document.getElementById('email');
-const emailMessage    = document.querySelector('.email-message');
+const emailMessage = document.querySelector('.email-message');
 const password= document.getElementById('password');
 const passwordMessage = document.querySelector('.password-message');
 const rememberMe = document.getElementById('remember-me');
@@ -45,7 +44,7 @@ loginForm.addEventListener('submit' , (event)=>{
     notyf.success('Login successful!');
 
     setTimeout(() => {
-        window.location.href = '../pages/dashboard.html';
+        window.location.href = '../index.html';
     }, 1200);
 
 })
@@ -102,8 +101,6 @@ function validatePassword() {
 }
 
 
-
-
 email.addEventListener('blur', validateEmail);
 
 email.addEventListener('focus', () => {
@@ -119,5 +116,5 @@ password.addEventListener('focus', () => {
 
 registerBtn.addEventListener('click',(event)=>{
     event.preventDefault();
-    window.location.href = '../pages/register.html';
+    window.location.href = '../register.html';
 })
