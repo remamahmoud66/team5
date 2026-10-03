@@ -1,118 +1,83 @@
 
 body {
     min-height: 100vh;
-    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--background);
-    padding: 32px;
-    box-sizing: border-box;
+    padding: var(--space-4);
 }
 
 main {
+    display: flex;
     width: 100%;
     max-width: 1000px;
-    min-height: 620px;
-
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
+    height: 640px; /* ارتفاع ثابت ومتناسق يمنع السكرول */
     background-color: var(--surface);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-lg);
-
     overflow: hidden;
 }
 
+
 figure {
-    margin: 0;
-    padding: 48px;
-
+    flex: 1;
+    background-color: #FFD900; 
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background-color: #FFD900;
-}
-
-figure a {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: var(--space-6);
 }
 
 figure img {
-    display: block;
-    width: 100%;
-    max-width: 360px;
+    max-width: 90%;
     height: auto;
     object-fit: contain;
 }
 
+
 .register-section {
-    width: 100%;
-    max-width: 420px;
-
-    justify-self: center;
-    align-self: center;
-
+    flex: 1.2;
     display: flex;
     flex-direction: column;
-
-    padding: 40px 55px;
-    box-sizing: border-box;
-
+    justify-content: center;
+    padding: var(--space-5) var(--space-8);
     background-color: var(--surface);
+    overflow: hidden; 
 }
 
 .register-section h1 {
-    margin: 0 0 22px;
-
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
-    text-align: center;
-
     color: var(--text-primary);
+    text-align: center;
+    margin-bottom: var(--space-3);
 }
 
+
 .login-register-container {
-    width: 100%;
-
     display: flex;
-
-    padding: 4px;
-    margin-bottom: 22px;
-
     background-color: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-full);
-
-    box-sizing: border-box;
+    padding: var(--space-1);
+    margin-bottom: var(--space-6);
 }
 
-.login-register-container a {
+.login-register-container button {
     flex: 1;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 38px;
-
-    border-radius: var(--radius-full);
+    border: none;
+    background: transparent;
+    padding: var(--space-3) var(--space-1) ;
 
     font-size: 13px;
     font-weight: 600;
-
     color: var(--text-secondary);
-    text-decoration: none;
-
-    transition: all 0.25s ease;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
 }
+
 
 .login-register-container .register-btn {
     background-color: #FFD900;
@@ -123,103 +88,73 @@ figure img {
     opacity: 0.9;
 }
 
-.login-register-container .login-btn:hover {
-    background-color: rgba(255, 217, 0, 0.12);
-}
-
 .register-form {
-    width: 100%;
-
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    column-gap: 14px;
-    row-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 0;
 }
+
 
 .input-group {
-    width: 100%;
-
+    width: 48%;
     display: flex;
     flex-direction: column;
-
-    gap: 4px;
 }
 
+
 .input-group.full-width {
-    grid-column: 1 / -1;
+    width: 100%;
 }
 
 .input-group label {
     font-size: 12px;
     font-weight: 500;
-
     color: var(--text-primary);
+    margin-bottom: 2px;
 }
 
 .input-group input {
     width: 100%;
-    height: 38px;
-
-    padding: 0 11px;
-
-    box-sizing: border-box;
-
-    border: 1px solid var(#595959);
+    padding: 7px 10px;
+    border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-
-    background-color: var(--surface);
-
-    color: var(--text-primary);
-    font-family: inherit;
     font-size: 13px;
-
+    font-family: inherit;
+    color: var(--text-primary);
     outline: none;
-
     transition: all 0.2s ease;
 }
 
 .input-group input:focus {
     border-color: #FFD900;
-    box-shadow: 0 0 0 3px rgba(255, 217, 0, 0.12);
+    box-shadow: 0 0 0 0.5px rgba(255, 217, 0, 0.25);
 }
 
-.input-group input::placeholder {
+.input-group input::placeholder{
     font-size: 12px;
 }
 
+
 .message {
-    min-height: 13px;
-
-    margin-top: 1px;
-
     font-size: 10px;
-    line-height: 1.2;
-    font-weight: 500;
-
     color: var(--danger, #EF4444);
+    min-height: 14px;
+    margin-top: 2px;
+    font-weight: 500;
 }
 
 .register-form button[type="submit"] {
-    grid-column: 1 / -1;
-
     width: 100%;
-    height: 43px;
-
-    margin-top: 5px;
-
-    border: none;
-    border-radius: var(--radius-md);
-
+    padding: 10px;
+    margin-top: var(--space-3);
     background-color: #FFD900;
     color: var(--black);
-
-    font-family: inherit;
+    border: none;
+    border-radius: var(--radius-md);
     font-size: 14px;
     font-weight: 600;
-
     cursor: pointer;
-
     transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
@@ -231,96 +166,41 @@ figure img {
     transform: scale(0.99);
 }
 
-.register-section > p {
-    margin: 18px 0 0;
 
+.register-section p {
     text-align: center;
-
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-secondary);
+    margin-top: var(--space-3);
 }
 
-.register-section > p a {
-    margin-left: 5px;
-
+.register-section p a {
     color: var(--info);
     font-weight: 600;
-
     text-decoration: none;
-
-    transition: opacity 0.2s ease;
+    margin-left: var(--space-1);
+    opacity: 0.8;
+    transition: opacity 0.3s ease-in-out;
 }
 
-.register-section > p a:hover {
-    opacity: 0.7;
+.register-section p a:hover {
+    opacity: 1;
 }
 
-@media (max-width: 800px) {
 
-    body {
-        padding: 20px;
-    }
-
+@media (max-width: 768px) {
     main {
-        grid-template-columns: 1fr;
-        max-width: 520px;
-        min-height: auto;
-    }
-
-    figure {
-        min-height: 240px;
-        padding: 35px;
-    }
-
-    figure img {
-        max-width: 280px;
+        flex-direction: column;
+        max-width: 460px;
+        height: auto;
     }
 
     .register-section {
-        max-width: 100%;
-        padding: 40px;
+        padding: var(--space-5);
+    }
+
+    .register-form label,
+    .register-form input {
+        width: 100%;
     }
 }
-
-@media (max-width: 480px) {
-
-    body {
-        padding: 12px;
-    }
-
-    main {
-        border-radius: 18px;
-    }
-
-    figure {
-        min-height: 190px;
-        padding: 25px;
-    }
-
-    figure img {
-        max-width: 220px;
-    }
-
-    .register-section {
-        padding: 30px 22px;
-    }
-
-    .register-section h1 {
-        font-size: 23px;
-        margin-bottom: 20px;
-    }
-
-    .register-form {
-        grid-template-columns: 1fr;
-        row-gap: 10px;
-    }
-
-    .input-group.full-width {
-        grid-column: auto;
-    }
-
-    .register-form button[type="submit"] {
-        grid-column: auto;
-    }
-}
-
