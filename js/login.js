@@ -44,7 +44,7 @@ loginForm.addEventListener('submit' , (event)=>{
     notyf.success('Login successful!');
 
     setTimeout(() => {
-        window.location.href = '../pages/dashboard.html';
+        window.location.href = 'main.html';
     }, 1200);
 
 })
@@ -116,5 +116,5 @@ password.addEventListener('focus', () => {
 
 registerBtn.addEventListener('click',(event)=>{
     event.preventDefault();
-    window.location.href = '../register.html';
+    window.location.href = 'register.html';
 })

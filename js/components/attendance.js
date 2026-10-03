@@ -1,269 +1,269 @@
-// import { seedData } from "../seedData.js";
+import { seedData } from "../seedData.js";
 
-// export function showAttendance(app) {
+export function showAttendance(app) {
 
-//     const classes = seedData.classes;
+    const classes = seedData.classes;
 
-//     let selectedClass = classes[0];
+    let selectedClass = classes[0];
 
-//     app.innerHTML = `
-//         <section class="page-content">
+    app.innerHTML = `
+        <section class="page-content">
 
-//             <div class="page-header">
+            <div class="page-header">
 
-//                 <div>
-//                     <h1>Attendance</h1>
-//                     <p>Track and manage student attendance.</p>
-//                 </div>
+                <div>
+                    <h1>Attendance</h1>
+                    <p>Track and manage student attendance.</p>
+                </div>
 
-//                 <select id="classSelect" class="class-select">
+                <select id="classSelect" class="class-select">
 
-//                     ${classes.map(classItem => `
-//                         <option value="${classItem.id}">
-//                             ${classItem.name}
-//                         </option>
-//                     `).join("")}
+                    ${classes.map(classItem => `
+                        <option value="${classItem.id}">
+                            ${classItem.name}
+                        </option>
+                    `).join("")}
 
-//                 </select>
+                </select>
 
-//             </div>
+            </div>
 
 
-//             <div class="attendance-summary">
+            <div class="attendance-summary">
 
-//                 <div class="summary-card">
-//                     <h3>Class</h3>
-//                     <p id="summaryClass">${selectedClass.name}</p>
-//                 </div>
+                <div class="summary-card">
+                    <h3>Class</h3>
+                    <p id="summaryClass">${selectedClass.name}</p>
+                </div>
 
-//                 <div class="summary-card">
-//                     <h3>Total Students</h3>
-//                     <p id="summaryStudents"></p>
-//                 </div>
+                <div class="summary-card">
+                    <h3>Total Students</h3>
+                    <p id="summaryStudents"></p>
+                </div>
 
-//                 <div class="summary-card">
-//                     <h3>Present</h3>
-//                     <p id="summaryPresent"></p>
-//                 </div>
+                <div class="summary-card">
+                    <h3>Present</h3>
+                    <p id="summaryPresent"></p>
+                </div>
 
-//                 <div class="summary-card">
-//                     <h3>Attendance</h3>
-//                     <p id="summaryPercentage"></p>
-//                 </div>
+                <div class="summary-card">
+                    <h3>Attendance</h3>
+                    <p id="summaryPercentage"></p>
+                </div>
 
-//             </div>
+            </div>
 
 
-//             <div class="attendance-table-container">
+            <div class="attendance-table-container">
 
-//                 <table class="attendance-table">
+                <table class="attendance-table">
 
-//                     <thead>
+                    <thead>
 
-//                         <tr>
-//                             <th>Student ID</th>
-//                             <th>Student Name</th>
-//                             <th>Grade</th>
-//                             <th>Status</th>
-//                         </tr>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Grade</th>
+                            <th>Status</th>
+                        </tr>
 
-//                     </thead>
+                    </thead>
 
-//                     <tbody id="attendanceTableBody"></tbody>
+                    <tbody id="attendanceTableBody"></tbody>
 
-//                 </table>
+                </table>
 
-//             </div>
+            </div>
 
-//         </section>
-//     `;
+        </section>
+    `;
 
 
-//     const classSelect =
-//         document.getElementById("classSelect");
+    const classSelect =
+        document.getElementById("classSelect");
 
-//     const tableBody =
-//         document.getElementById("attendanceTableBody");
+    const tableBody =
+        document.getElementById("attendanceTableBody");
 
 
-//     function getClassStudents() {
+    function getClassStudents() {
 
-//         return seedData.students.filter(student =>
-//             selectedClass.studentIds.includes(student.id)
-//         );
+        return seedData.students.filter(student =>
+            selectedClass.studentIds.includes(student.id)
+        );
 
-//     }
+    }
 
 
-//     function getStudentStatus(studentId) {
+    function getStudentStatus(studentId) {
 
-//         const record = seedData.attendance.find(item =>
-//             item.studentId === studentId &&
-//             item.classId === selectedClass.id
-//         );
+        const record = seedData.attendance.find(item =>
+            item.studentId === studentId &&
+            item.classId === selectedClass.id
+        );
 
-//         return record ? record.status : "Absent";
+        return record ? record.status : "Absent";
 
-//     }
+    }
 
 
-//     function updateAttendance() {
+    function updateAttendance() {
 
-//         const students = getClassStudents();
+        const students = getClassStudents();
 
 
-//         const presentCount = students.filter(student =>
-//             getStudentStatus(student.id) === "Present"
-//         ).length;
+        const presentCount = students.filter(student =>
+            getStudentStatus(student.id) === "Present"
+        ).length;
 
 
-//         const totalCount = students.length;
+        const totalCount = students.length;
 
 
-//         const attendancePercentage =
-//             totalCount > 0
-//                 ? Math.round(
-//                     (presentCount / totalCount) * 100
-//                 )
-//                 : 0;
+        const attendancePercentage =
+            totalCount > 0
+                ? Math.round(
+                    (presentCount / totalCount) * 100
+                )
+                : 0;
 
 
-//         document.getElementById(
-//             "summaryClass"
-//         ).textContent = selectedClass.name;
+        document.getElementById(
+            "summaryClass"
+        ).textContent = selectedClass.name;
 
 
-//         document.getElementById(
-//             "summaryStudents"
-//         ).textContent = totalCount;
+        document.getElementById(
+            "summaryStudents"
+        ).textContent = totalCount;
 
 
-//         document.getElementById(
-//             "summaryPresent"
-//         ).textContent = presentCount;
+        document.getElementById(
+            "summaryPresent"
+        ).textContent = presentCount;
 
 
-//         document.getElementById(
-//             "summaryPercentage"
-//         ).textContent =
-//             attendancePercentage + "%";
+        document.getElementById(
+            "summaryPercentage"
+        ).textContent =
+            attendancePercentage + "%";
 
 
-//         tableBody.innerHTML = students.map(student => {
+        tableBody.innerHTML = students.map(student => {
 
-//             const status =
-//                 getStudentStatus(student.id);
+            const status =
+                getStudentStatus(student.id);
 
 
-//             return `
-//                 <tr>
+            return `
+                <tr>
 
-//                     <td>
-//                         ${student.id}
-//                     </td>
+                    <td>
+                        ${student.id}
+                    </td>
 
-//                     <td>
-//                         ${student.fullName}
-//                     </td>
+                    <td>
+                        ${student.fullName}
+                    </td>
 
-//                     <td>
-//                         ${student.academicLevel}
-//                     </td>
+                    <td>
+                        ${student.academicLevel}
+                    </td>
 
-//                     <td>
+                    <td>
 
-//                         <button
-//                             class="attendance-toggle ${status.toLowerCase()}"
-//                             data-student-id="${student.id}"
-//                         >
-//                             ${status}
-//                         </button>
+                        <button
+                            class="attendance-toggle ${status.toLowerCase()}"
+                            data-student-id="${student.id}"
+                        >
+                            ${status}
+                        </button>
 
-//                     </td>
+                    </td>
 
-//                 </tr>
-//             `;
+                </tr>
+            `;
 
-//         }).join("");
+        }).join("");
 
-//     }
+    }
 
 
-//     tableBody.addEventListener("click", event => {
+    tableBody.addEventListener("click", event => {
 
-//         const button =
-//             event.target.closest(".attendance-toggle");
+        const button =
+            event.target.closest(".attendance-toggle");
 
 
-//         if (!button) {
-//             return;
-//         }
+        if (!button) {
+            return;
+        }
 
 
-//         const studentId =
-//             button.dataset.studentId;
+        const studentId =
+            button.dataset.studentId;
 
 
-//         const record =
-//             seedData.attendance.find(item =>
-//                 item.studentId === studentId &&
-//                 item.classId === selectedClass.id
-//             );
+        const record =
+            seedData.attendance.find(item =>
+                item.studentId === studentId &&
+                item.classId === selectedClass.id
+            );
 
 
-//         if (record) {
+        if (record) {
 
-//             record.status =
-//                 record.status === "Present"
-//                     ? "Absent"
-//                     : "Present";
+            record.status =
+                record.status === "Present"
+                    ? "Absent"
+                    : "Present";
 
-//         } else {
+        } else {
 
-//             seedData.attendance.push({
+            seedData.attendance.push({
 
-//                 id:
-//                     "ATT" +
-//                     String(
-//                         seedData.attendance.length + 1
-//                     ).padStart(3, "0"),
+                id:
+                    "ATT" +
+                    String(
+                        seedData.attendance.length + 1
+                    ).padStart(3, "0"),
 
-//                 studentId: studentId,
+                studentId: studentId,
 
-//                 classId: selectedClass.id,
+                classId: selectedClass.id,
 
-//                 subjectId: selectedClass.subjectId,
+                subjectId: selectedClass.subjectId,
 
-//                 date:
-//                     new Date()
-//                         .toISOString()
-//                         .split("T")[0],
+                date:
+                    new Date()
+                        .toISOString()
+                        .split("T")[0],
 
-//                 status: "Present"
+                status: "Present"
 
-//             });
+            });
 
-//         }
+        }
 
 
-//         updateAttendance();
+        updateAttendance();
 
-//     });
+    });
 
 
-//     classSelect.addEventListener("change", () => {
+    classSelect.addEventListener("change", () => {
 
-//         selectedClass =
-//             classes.find(classItem =>
-//                 classItem.id === classSelect.value
-//             );
+        selectedClass =
+            classes.find(classItem =>
+                classItem.id === classSelect.value
+            );
 
 
-//         updateAttendance();
+        updateAttendance();
 
-//     });
+    });
 
 
-//     updateAttendance();
+    updateAttendance();
 
-// }
+}

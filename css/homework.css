@@ -1,0 +1,1115 @@
+/* =========================================================
+   HOMEWORK PAGE
+========================================================= */
+
+.homework-page {
+    padding: 30px;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.homework-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 30px;
+}
+
+.homework-page .page-header h1 {
+    margin: 0 0 6px;
+
+    color: var(--color-text);
+
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.homework-page .page-header p {
+    margin: 0;
+
+    color: var(--color-muted);
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.homework-primary-btn {
+    min-height: 42px;
+
+    padding: 10px 18px;
+
+    border: none;
+    border-radius: var(--radius-md);
+
+    background-color: var(--color-accent);
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.homework-primary-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow: var(--shadow-md);
+}
+
+.homework-primary-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.homework-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.homework-stat-card {
+    padding: 22px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.homework-stat-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
+}
+
+.homework-stat-label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.homework-stat-card strong {
+    display: block;
+
+    color: var(--color-text);
+
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.homework-stat-card small {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--color-muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.homework-toolbar {
+    display: grid;
+
+    grid-template-columns: 1fr 220px;
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.homework-search input,
+.homework-filter {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    color: var(--color-text);
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition: all 0.2s ease;
+}
+
+.homework-search input::placeholder {
+    color: var(--color-muted);
+}
+
+.homework-search input:hover,
+.homework-filter:hover {
+    border-color: var(--color-accent);
+}
+
+.homework-search input:focus,
+.homework-filter:focus {
+    border-color: var(--color-accent);
+
+    box-shadow:
+        0 0 0 3px rgba(232, 163, 61, 0.12);
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.homework-table-container {
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+}
+
+.homework-table-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 22px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.homework-table-header h2 {
+    margin: 0 0 5px;
+
+    color: var(--color-text);
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.homework-table-header p {
+    margin: 0;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+}
+
+.homework-count {
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    background-color: #f1f0ec;
+
+    color: var(--color-muted);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.homework-table-scroll {
+    overflow-x: auto;
+}
+
+.homework-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.homework-table thead {
+    background-color: #f7f5ef;
+}
+
+.homework-table th {
+    padding: 16px 20px;
+
+    text-align: left;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    border-bottom: 1px solid var(--color-border);
+
+    white-space: nowrap;
+}
+
+.homework-table td {
+    padding: 17px 20px;
+
+    color: var(--color-text);
+
+    font-size: 14px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.homework-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.homework-table tbody tr:hover {
+    background-color: #fcfaf6;
+}
+
+.homework-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   HOMEWORK TITLE
+========================================================= */
+
+.homework-title-cell strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--color-text);
+
+    font-size: 14px;
+}
+
+.homework-title-cell span {
+    display: block;
+
+    max-width: 230px;
+
+    overflow: hidden;
+
+    color: var(--color-muted);
+
+    font-size: 11px;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SUBMISSIONS
+========================================================= */
+
+.submission-cell {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+.submission-cell strong {
+    color: var(--color-text);
+
+    font-size: 13px;
+}
+
+.submission-cell span {
+    color: var(--color-muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   HOMEWORK STATUS
+========================================================= */
+
+.homework-status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 75px;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.homework-status.completed {
+    color: #2f7d4a;
+
+    background-color: #eaf7ee;
+}
+
+.homework-status.in-progress {
+    color: #9a6a16;
+
+    background-color: #fff4d9;
+}
+
+.homework-status.pending {
+    color: var(--color-muted);
+
+    background-color: #f1f0ec;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.homework-actions {
+    display: flex;
+
+    gap: 6px;
+}
+
+.homework-action-btn {
+    padding: 6px 10px;
+
+    border-radius: 18px;
+
+    background: transparent;
+
+    font-family: inherit;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.homework-action-btn.view {
+    color: #2f7d4a;
+
+    border: 1px solid #cce6d4;
+}
+
+.homework-action-btn.view:hover {
+    background-color: #eaf7ee;
+}
+
+.homework-action-btn.edit {
+    color: #2f6f9f;
+
+    border: 1px solid #cbdfea;
+}
+
+.homework-action-btn.edit:hover {
+    background-color: #edf6fb;
+}
+
+.homework-action-btn.delete {
+    color: #c94a4a;
+
+    border: 1px solid #f0caca;
+}
+
+.homework-action-btn.delete:hover {
+    background-color: #fdeeee;
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.homework-empty {
+    padding: 55px 30px;
+
+    text-align: center;
+}
+
+.homework-empty-icon {
+    margin-bottom: 12px;
+
+    font-size: 34px;
+}
+
+.homework-empty h3 {
+    margin: 0 0 7px;
+
+    color: var(--color-text);
+
+    font-size: 18px;
+}
+
+.homework-empty p {
+    margin: 0;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   STATUS SECTION
+========================================================= */
+
+.homework-status-section {
+    display: none;
+
+    margin-top: 30px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+}
+
+.homework-status-section.visible {
+    display: block;
+}
+
+.status-section-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 30px;
+
+    padding: 25px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.status-eyebrow {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--color-accent);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+}
+
+.status-section-header h2 {
+    margin: 0 0 6px;
+
+    color: var(--color-text);
+
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.status-section-header p {
+    margin: 0;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   STATUS SUMMARY
+========================================================= */
+
+.status-summary {
+    display: flex;
+
+    gap: 12px;
+}
+
+.status-summary-item {
+    min-width: 100px;
+
+    padding: 14px;
+
+    text-align: center;
+
+    background-color: #fcfaf6;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+}
+
+.status-summary-item strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--color-text);
+
+    font-size: 21px;
+}
+
+.status-summary-item span {
+    color: var(--color-muted);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   STATUS TOOLBAR
+========================================================= */
+
+.status-toolbar {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 20px;
+
+    padding: 20px 25px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.status-toolbar label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--color-text);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-toolbar select {
+    min-width: 180px;
+
+    padding: 9px 12px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    color: var(--color-text);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    outline: none;
+}
+
+.status-toolbar select:focus {
+    border-color: var(--color-accent);
+
+    box-shadow:
+        0 0 0 3px rgba(232, 163, 61, 0.12);
+}
+
+.status-toolbar p {
+    margin: 0;
+
+    color: var(--color-muted);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   STATUS TABLE
+========================================================= */
+
+.status-table-container {
+    overflow-x: auto;
+}
+
+.status-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.status-table thead {
+    background-color: #f7f5ef;
+}
+
+.status-table th {
+    padding: 16px 20px;
+
+    text-align: left;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.status-table td {
+    padding: 16px 20px;
+
+    color: var(--color-text);
+
+    font-size: 14px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.status-table tbody tr:hover {
+    background-color: #fcfaf6;
+}
+
+.status-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   STUDENT
+========================================================= */
+
+.status-student strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 13px;
+}
+
+.status-student span {
+    color: var(--color-muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   SUBMISSION TOGGLE
+========================================================= */
+
+.submission-toggle {
+    min-width: 105px;
+
+    padding: 7px 13px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    font-family: inherit;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.submission-toggle.submitted {
+    color: #2f7d4a;
+
+    background-color: #eaf7ee;
+}
+
+.submission-toggle.submitted:hover {
+    background-color: #d7f0df;
+}
+
+.submission-toggle.not-submitted {
+    color: #c94a4a;
+
+    background-color: #fdeeee;
+}
+
+.submission-toggle.not-submitted:hover {
+    background-color: #f9dada;
+}
+
+.submission-toggle:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================================================
+   STATUS EMPTY
+========================================================= */
+
+.status-empty {
+    padding: 35px;
+
+    text-align: center;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.homework-modal-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 2000;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background-color: rgba(20, 20, 20, 0.45);
+}
+
+.homework-modal-overlay.show {
+    display: flex;
+}
+
+.homework-modal {
+    width: 100%;
+
+    max-width: 650px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.homework-modal-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    padding: 22px;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.homework-modal-header h2 {
+    margin: 0 0 5px;
+
+    color: var(--color-text);
+
+    font-size: 20px;
+}
+
+.homework-modal-header p {
+    margin: 0;
+
+    color: var(--color-muted);
+
+    font-size: 13px;
+}
+
+.homework-close-btn {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background-color: #f5f3ee;
+
+    color: var(--color-muted);
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+.homework-close-btn:hover {
+    background-color: #ece9e1;
+
+    color: var(--color-text);
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+#homeworkForm {
+    padding: 22px;
+}
+
+.homework-form-group {
+    margin-bottom: 20px;
+}
+
+.homework-form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.homework-form-group input,
+.homework-form-group select,
+.homework-form-group textarea {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 13px;
+
+    background-color: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    color: var(--color-text);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    outline: none;
+
+    resize: vertical;
+
+    transition: all 0.2s ease;
+}
+
+.homework-form-group input:focus,
+.homework-form-group select:focus,
+.homework-form-group textarea:focus {
+    border-color: var(--color-accent);
+
+    box-shadow:
+        0 0 0 3px rgba(232, 163, 61, 0.12);
+}
+
+.homework-form-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   MODAL ACTIONS
+========================================================= */
+
+.homework-modal-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid var(--color-border);
+}
+
+.homework-secondary-btn {
+    min-height: 42px;
+
+    padding: 10px 18px;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background-color: var(--color-surface);
+
+    color: var(--color-muted);
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.homework-secondary-btn:hover {
+    background-color: #f7f5ef;
+
+    color: var(--color-text);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .homework-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .status-section-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .status-summary {
+        width: 100%;
+    }
+
+    .status-summary-item {
+        flex: 1;
+    }
+
+    .status-toolbar {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .homework-page {
+        padding: 20px;
+    }
+
+    .homework-page .page-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 18px;
+    }
+
+    .homework-primary-btn {
+        width: 100%;
+    }
+
+    .homework-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .homework-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .homework-table {
+        min-width: 1000px;
+    }
+
+    .status-table {
+        min-width: 650px;
+    }
+
+    .homework-table-header {
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+    .status-summary {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr 1fr;
+
+        width: 100%;
+    }
+
+    .status-summary-item {
+        min-width: 0;
+    }
+
+    .homework-form-row {
+        grid-template-columns: 1fr;
+
+        gap: 0;
+    }
+
+}

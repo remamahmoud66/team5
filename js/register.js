@@ -320,5 +320,5 @@ confirmPassword.addEventListener('focus', () => {
 
 loginBtn.addEventListener('click',(event)=>{
     event.preventDefault();
-    window.location.href = '../login.html';
+    window.location.href = 'login.html';
 }); 
