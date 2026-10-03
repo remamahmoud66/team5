@@ -1,0 +1,604 @@
+:root {
+        /* Colors */
+        --color-bg: #faf9f7;
+        --color-surface: #ffffff;
+        --color-ink: #1f1c1b;
+        --color-muted: #68666f;
+        --color-border: #e9e6dc;
+
+        --color-accent: #e8a33d;
+        --color-accent-text: #8a5a0f;
+        --color-accent-ink: #1c1b1f;
+
+        --color-warning-bg: #fff7e6;
+        --color-danger: #c94c4c;
+        --color-danger-bg: #fff0f0;
+        --color-white: #ffffff;
+
+        /* Typography */
+        --font-family: "Inter", sans-serif;
+
+        --font-size-xs: 12px;
+        --font-size-sm: 14px;
+        --font-size-md: 16px;
+        --font-size-xl: 24px;
+
+        /* Spacing */
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 16px;
+        --space-lg: 24px;
+        --space-xl: 32px;
+
+        /* Radius */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-full: 999px;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 3px rgba(31, 28, 27, 0.06);
+
+        /* Layout */
+        --sidebar-width: 250px;
+        --content-max-width: 1400px;
+      }
+
+/* ==========================================================================
+   Page Layout & Header
+   ========================================================================== */
+.content-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header-title h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-secondary {
+  background-color: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btn-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+.btn-info {
+  background-color: #0ea5e9;
+  color: #ffffff;
+}
+
+.btn-info:hover {
+  background-color: #0284c7;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   Toolbar & Search Controls
+   ========================================================================== */
+.toolbar-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-box {
+  flex: 1;
+}
+
+.search-box input,
+.filter-box select {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background-color: #ffffff;
+  outline: none;
+}
+
+.search-box input:focus,
+.filter-box select:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ==========================================================================
+   Data Table Styling
+   ========================================================================== */
+.table-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.data-table thead {
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table th {
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.data-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.exam-title-cell strong {
+  display: block;
+  color: #0f172a;
+}
+
+.exam-title-cell small {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.table-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* ==========================================================================
+   Pop-up Modal Styles
+   ========================================================================== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none !important;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 8px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.modal-lg {
+  max-width: 720px;
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.btn-close:hover {
+  color: #0f172a;
+}
+
+/* Form Styling */
+.form {
+  padding: 1.5rem;
+}
+
+.grades-body {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* Validation UI State */
+input.invalid {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 768px) {
+  .content-container {
+    padding: 1rem;
+  }
+
+  .toolbar-section,
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+}
+
+
+/* Table Action Buttons Container */
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+/* Icon Button Base */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+/* Specific Action Icon Styles */
+.btn-icon.btn-info {
+  color: #0284c7;
+  background-color: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.btn-icon.btn-info:hover {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+.btn-icon.btn-secondary {
+  color: #475569;
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.btn-icon.btn-secondary:hover {
+  background-color: #475569;
+  color: #ffffff;
+  border-color: #475569;
+}
+
+.btn-icon.btn-danger {
+  color: #dc2626;
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.btn-icon.btn-danger:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+.breadcrumb {
+  background-color: inherit;
+}
+.btn-outline-warning{
+  background-color: var(--color-accent) ;
+  color: var(--color-accent-ink);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.btn-outline-warning:hover{
+  background-color: #D68F29;
+}
+
+/* Modal Overlay Background */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Dimmed backdrop */
+  display: flex;
+  justify-content: center; /* Horizontally centered */
+  align-items: center;     /* Vertically centered */
+  z-index: 1000;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+/* Hidden Utility State */
+.modal.hidden {
+  display: none !important;
+}
+
+/* Modal Box Centered Content */
+.modal-content {
+  background-color: #ffffff;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: modalPopIn 0.25s ease-out;
+}
+
+/* Smooth Entrance Animation */
+@keyframes modalPopIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+/* for the statistics */
+
+/* ==========================================
+   STATISTICS & ANALYTICS CARDS
+   ========================================== */
+
+/* Card Styling with Accent Left Borders */
+.stats-card {
+  border: none;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #6c757d; /* Default left border */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Custom Accent Borders per Card Type */
+.stats-card-best {
+  border-left-color: #28a745; /* Success Green */
+}
+
+.stats-card-smart {
+  border-left-color: #17a2b8; /* Info Cyan */
+}
+
+.stats-card-weak {
+  border-left-color: #dc3545; /* Danger Red */
+}
+
+/* Typography & Titles */
+.stats-card-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+.stats-card-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #28a745;
+  margin: 0;
+}
+
+.stats-card-sub {
+  font-size: 0.825rem;
+  color: #6c757d;
+}
+
+/* Scrollable Student Lists */
+.stats-student-list {
+  max-height: 120px; /* Limits height so card doesn't expand the page */
+  overflow-y: auto;  /* Adds scrolling when students exceed limit */
+  padding-right: 6px;
+  margin-top: 0.5rem;
+}
+
+.stats-student-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed #e9ecef;
+  font-size: 0.875rem;
+}
+
+.stats-student-item:last-child {
+  border-bottom: none;
+}
+
+/* Custom Styled Scrollbar */
+.stats-student-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.stats-student-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.stats-student-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.stats-student-list::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* Fix the modal height and make the content inside scrollable */
+#grades-modal .modal-content {
+  max-height: 90vh; /* Limits modal height to 90% of screen height */
+  display: flex;
+  flex-direction: column;
+}
+
+.grades-body {
+  overflow-y: auto; /* Adds scrollbar when student list overflows */
+  max-height: 60vh;  /* Controls maximum height before scrolling starts */
+  padding-right: 8px; /* Prevents scrollbar from overlapping form elements */
+}
+
+/* Optional: Make the table header sticky so column names stay visible while scrolling */
+#grades-modal .data-table thead th {
+  position: sticky;
+  top: -25px;
+  background-color: #fff; /* Match your modal background color */
+  z-index: 2;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
