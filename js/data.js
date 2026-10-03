@@ -51,7 +51,18 @@ export function getCurrentTeacher() {
     const data = localStorage.getItem('currentTeacher') || sessionStorage.getItem('currentTeacher');
     return data ? JSON.parse(data) : null;
 }
+export function updateTeacher(updatedTeacher) {
+
+localStorage.setItem(
+    "currentTeacher",
+    JSON.stringify(updatedTeacher)
+);
+
+}
 export function logout() {
-    localStorage.removeItem('currentTeacher'); 
-    window.location.href = '../login.html'; 
+    localStorage.removeItem('currentTeacher');
+    sessionStorage.removeItem('currentTeacher');
+    // Works from both root and pages/ directory
+    const isInPages = window.location.pathname.includes('/pages/');
+    window.location.href = isInPages ? '../login.html' : './login.html';
 }

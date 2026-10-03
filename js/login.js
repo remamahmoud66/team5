@@ -44,7 +44,7 @@ loginForm.addEventListener('submit' , (event)=>{
     notyf.success('Login successful!');
 
     setTimeout(() => {
-        window.location.href = '../index.html';
+        window.location.href = '../pages/dashboard.html';
     }, 1200);
 
 })

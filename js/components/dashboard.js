@@ -1,768 +1,703 @@
-import {getCurrentTeacher} from "../data.js"
-import { seedData } from "../seedData.js";
-import { loadWeather } from "../weather_api.js";
+// import { getCurrentTeacher } from "../data.js";
+// import { seedData } from "../seedData.js";
+// import { loadWeather } from "../weather_api.js";
 
-export function showDashboard(app) {
+// export function showDashboard(app) {
 
-    console.log("Dashboard component loaded");
-    console.log("App element:", app);
-    console.log("Seed Data:", seedData);
+//     console.log("Dashboard component loaded");
+//     console.log("App element:", app);
+//     console.log("Seed Data:", seedData);
 
+//     const teacher = getCurrentTeacher();
 
+//     console.log("Current teacher:", teacher);
 
-    const teacher = getCurrentTeacher();
+//     const attendance = seedData.attendance;
 
-    console.log("Current teacher:", teacher);
+//     const totalAttendance = attendance.length;
 
+//     const presentCount = attendance.filter(
+//         item => item.status === "Present"
+//     ).length;
 
-    const attendance = seedData.attendance;
+//     const overallAttendance =
+//         totalAttendance > 0
+//             ? Math.round(
+//                 (presentCount / totalAttendance) * 100
+//             )
+//             : 0;
 
-    const totalAttendance = attendance.length;
+//     const courseStatistics = seedData.subjects.map(subject => {
 
-    const presentCount = attendance.filter(
-        item => item.status === "Present"
-    ).length;
+//         const subjectAttendance = attendance.filter(
+//             item => item.subjectId === subject.id
+//         );
 
+//         const present = subjectAttendance.filter(
+//             item => item.status === "Present"
+//         ).length;
 
-    const overallAttendance =
-        totalAttendance > 0
-            ? Math.round(
-                (presentCount / totalAttendance) * 100
-            )
-            : 0;
+//         const percentage =
+//             subjectAttendance.length > 0
+//                 ? Math.round(
+//                     (present / subjectAttendance.length) * 100
+//                 )
+//                 : 0;
 
+//         return `
+//             <div class="course-item">
 
+//                 <div class="course-info">
 
-    const courseStatistics = seedData.subjects.map(subject => {
+//                     <span class="course-dot"></span>
 
-        const subjectAttendance = attendance.filter(
-            item => item.subjectId === subject.id
-        );
+//                     <div>
 
+//                         <strong>
+//                             ${subject.name}
+//                         </strong>
 
-        const present = subjectAttendance.filter(
-            item => item.status === "Present"
-        ).length;
+//                         <small>
+//                             ${subject.code || "Course"}
+//                         </small>
 
+//                     </div>
 
-        const percentage =
-            subjectAttendance.length > 0
-                ? Math.round(
-                    (present / subjectAttendance.length) * 100
-                )
-                : 0;
+//                 </div>
 
+//                 <strong class="percentage">
+//                     ${percentage}%
+//                 </strong>
 
-        return `
-            <div class="course-item">
+//             </div>
+//         `;
 
-                <div class="course-info">
+//     }).join("");
 
-                    <span class="course-dot"></span>
+//     const firstClass = seedData.classes[0];
 
-                    <div>
+//     const firstSubject = seedData.subjects.find(
+//         subject => subject.id === firstClass.subjectId
+//     );
 
-                        <strong>
-                            ${subject.name}
-                        </strong>
+//     const firstExam = seedData.exams.find(
+//         exam => exam.classId === firstClass.id
+//     );
 
-                        <small>
-                            ${subject.code}
-                        </small>
+//     const firstGrades = firstExam
+//         ? seedData.grades.filter(
+//             grade => grade.examId === firstExam.id
+//         )
+//         : [];
 
-                    </div>
+//     const calculateClassStats = (classId) => {
 
-                </div>
+//         const selectedClass = seedData.classes.find(
+//             classItem => classItem.id === classId
+//         );
 
+//         if (!selectedClass) {
 
-                <strong class="percentage">
-                    ${percentage}%
-                </strong>
+//             return {
+//                 subject: null,
+//                 exam: null,
+//                 grades: [],
+//                 average: 0,
+//                 highest: 0,
+//                 lowest: 0,
+//                 gradedStudents: 0,
+//                 totalStudents: 0
+//             };
+
+//         }
+
+//         const subject = seedData.subjects.find(
+//             item => item.id === selectedClass.subjectId
+//         );
+
+//         const exam = seedData.exams.find(
+//             item => item.classId === selectedClass.id
+//         );
+
+//         const grades = exam
+//             ? seedData.grades.filter(
+//                 grade => grade.examId === exam.id
+//             )
+//             : [];
 
-            </div>
-        `;
+//         const totalMarks = grades.reduce(
+//             (sum, grade) => sum + grade.mark,
+//             0
+//         );
 
-    }).join("");
+//         const average =
+//             grades.length > 0
+//                 ? Math.round(totalMarks / grades.length)
+//                 : 0;
 
+//         const highest =
+//             grades.length > 0
+//                 ? Math.max(
+//                     ...grades.map(grade => grade.mark)
+//                 )
+//                 : 0;
 
+//         const lowest =
+//             grades.length > 0
+//                 ? Math.min(
+//                     ...grades.map(grade => grade.mark)
+//                 )
+//                 : 0;
 
-    const firstClass = seedData.classes[0];
+//         return {
+//             subject: subject,
+//             exam: exam,
+//             grades: grades,
+//             average: average,
+//             highest: highest,
+//             lowest: lowest,
+//             gradedStudents: grades.length,
+//             totalStudents: selectedClass.studentIds.length
+//         };
 
-    const firstSubject = seedData.subjects.find(
-        subject => subject.id === firstClass.subjectId
-    );
+//     };
 
+//     const initialStats = calculateClassStats(
+//         firstClass.id
+//     );
 
-    const firstExam = seedData.exams.find(
-        exam => exam.classId === firstClass.id
-    );
+//     const classOptions = seedData.classes.map(classItem => {
 
+//         const subject = seedData.subjects.find(
+//             item => item.id === classItem.subjectId
+//         );
 
-    const firstGrades = firstExam
-        ? seedData.grades.filter(
-            grade => grade.examId === firstExam.id
-        )
-        : [];
+//         return `
+//             <option value="${classItem.id}">
+//                 ${classItem.name}
+//                 ${subject ? ` - ${subject.name}` : ""}
+//             </option>
+//         `;
 
+//     }).join("");
 
-    const calculateClassStats = (classId) => {
+//     app.innerHTML = `
 
-        const selectedClass = seedData.classes.find(
-            classItem => classItem.id === classId
-        );
+//         <section class="page-content">
 
+//             <!-- =========================
+//                  WELCOME
+//             ========================== -->
 
-        if (!selectedClass) {
-            return {
-                subject: null,
-                exam: null,
-                grades: [],
-                average: 0,
-                highest: 0,
-                lowest: 0,
-                gradedStudents: 0,
-                totalStudents: 0
-            };
-        }
+//             <section class="welcome-card">
 
+//                 <div class="welcome-content">
 
-        const subject = seedData.subjects.find(
-            item => item.id === selectedClass.subjectId
-        );
+//                     <h1>
 
+//                         Good evening,
 
-        const exam = seedData.exams.find(
-            item => item.classId === selectedClass.id
-        );
+//                         <span id="userName">
+//                             ${teacher.fullName}
+//                         </span>
 
+//                         <span>👋</span>
 
-        const grades = exam
-            ? seedData.grades.filter(
-                grade => grade.examId === exam.id
-            )
-            : [];
+//                     </h1>
 
+//                     <p>
+//                         Your academic workspace is ready.
+//                         Manage classes, students, assignments,
+//                         exams and attendance from one place.
+//                     </p>
 
-        const totalMarks = grades.reduce(
-            (sum, grade) => sum + grade.mark,
-            0
-        );
+//                 </div>
 
+//                 <button
+//                     class="create-btn"
+//                     id="createHomeworkBtn"
+//                 >
 
-        const average =
-            grades.length > 0
-                ? Math.round(totalMarks / grades.length)
-                : 0;
+//                     <span>+</span>
 
+//                     Create Homework
 
-        const highest =
-            grades.length > 0
-                ? Math.max(
-                    ...grades.map(grade => grade.mark)
-                )
-                : 0;
+//                 </button>
 
+//             </section>
 
-        const lowest =
-            grades.length > 0
-                ? Math.min(
-                    ...grades.map(grade => grade.mark)
-                )
-                : 0;
 
+//             <!-- =========================
+//                  WEATHER
+//             ========================== -->
 
-        return {
-            subject: subject,
-            exam: exam,
-            grades: grades,
-            average: average,
-            highest: highest,
-            lowest: lowest,
-            gradedStudents: grades.length,
-            totalStudents: selectedClass.studentIds.length
-        };
+//             <section class="dashboard-card weather-card">
 
-    };
+//                 <div class="card-header">
 
+//                     <div>
 
-    
+//                         <h2>
+//                             Weather — Amman
+//                         </h2>
 
-    const initialStats = calculateClassStats(
-        firstClass.id
-    );
+//                         <p>
+//                             Current weather conditions
+//                         </p>
 
+//                     </div>
 
+//                 </div>
 
 
-    const classOptions = seedData.classes.map(classItem => {
+//                 <div class="weather-content">
 
-        const subject = seedData.subjects.find(
-            item => item.id === classItem.subjectId
-        );
+//                     <div class="weather-icon">
 
+//                         <i
+//                             id="weatherIcon"
+//                             class="fa-solid fa-sun"
+//                         ></i>
 
-        return `
-            <option value="${classItem.id}">
-                ${classItem.name}
-                ${subject ? ` - ${subject.name}` : ""}
-            </option>
-        `;
+//                     </div>
 
-    }).join("");
 
+//                     <div class="temperature">
 
- 
+//                         <strong id="temperature">
+//                             Loading...
+//                         </strong>
 
-    app.innerHTML = `
+//                         <span id="weatherLocation">
+//                             Amman · Loading...
+//                         </span>
 
-        <section class="page-content">
+//                     </div>
 
+//                 </div>
 
-            <!-- =========================
-                 WELCOME
-            ========================== -->
 
-            <section class="welcome-card">
+//                 <p
+//                     id="weatherDescription"
+//                     class="weather-description"
+//                 >
+//                     Loading weather data...
+//                 </p>
 
-                <div class="welcome-content">
+//                 <div class="hourly-section">
 
-                    <h1>
+//     <h3>
+//         Hourly Forecast
+//     </h3>
 
-                        Good evening,
+//     <div
+//         class="hourly-forecast"
+//         id="hourlyForecast"
+//     >
 
-                        <span id="userName">
-                            ${teacher.fullName}
-                        </span>
+//         <div class="weather-loading">
+//             Loading forecast...
+//         </div>
 
-                        <span>👋</span>
+//     </div>
 
-                    </h1>
+// </div>
+//             </section>
 
 
-                    <p>
+//             <!-- =========================
+//                  DASHBOARD GRID
+//             ========================== -->
 
-                        Your academic workspace is ready.
-                        Manage classes, students, assignments,
-                        exams and attendance from one place.
+//             <div class="dashboard-grid">
 
-                    </p>
+//                 <!-- =========================
+//                      ATTENDANCE
+//                 ========================== -->
 
-                </div>
+//                 <section class="dashboard-card attendance-card">
 
+//                     <div class="card-header">
 
-                <button
-                    class="create-btn"
-                    id="createHomeworkBtn"
-                >
+//                         <div>
 
-                    <span>+</span>
+//                             <h2>
+//                                 Attendance Statistics
+//                             </h2>
 
-                    Create Homework
+//                             <p>
+//                                 Students attendance by course
+//                             </p>
 
-                </button>
+//                         </div>
 
-            </section>
+//                         <button
+//                             class="more-btn"
+//                             type="button"
+//                         >
 
+//                             <i class="fa-solid fa-ellipsis"></i>
 
+//                         </button>
 
-            <!-- =========================
-                 DASHBOARD GRID
-            ========================== -->
+//                     </div>
 
-            <div class="dashboard-grid">
 
+//                     <div class="attendance-content">
 
-                <!-- =========================
-                     WEATHER
-                ========================== -->
+//                         <div class="chart-container">
 
-                <section class="dashboard-card weather-card">
+//                             <div
+//                                 class="attendance-chart"
+//                                 id="attendanceChart"
+//                                 style="--attendance: ${overallAttendance}%;"
+//                             >
 
-                    <div class="card-header">
+//                                 <div class="chart-center">
 
-                        <div>
+//                                     <strong>
+//                                         ${overallAttendance}%
+//                                     </strong>
 
-                            <h2>
-                                Weather — Amman
-                            </h2>
+//                                     <span>
+//                                         Overall
+//                                     </span>
 
-                        </div>
+//                                 </div>
 
-                    </div>
+//                             </div>
 
+//                         </div>
 
-                    <div class="weather-content">
 
-                        <div class="weather-icon">
+//                         <div
+//                             class="course-statistics"
+//                             id="courseStatistics"
+//                         >
 
-                            <i
-                                id="weatherIcon"
-                                class="fa-solid fa-sun"
-                            ></i>
+//                             ${courseStatistics}
 
-                        </div>
+//                         </div>
 
+//                     </div>
 
-                        <div class="temperature">
+//                 </section>
 
-                            <strong id="temperature">
-                                Loading...
-                            </strong>
+//             </div>
 
 
-                            <span id="weatherLocation">
-                                Amman · Loading...
-                            </span>
+//             <!-- =====================================================
+//                  CLASS PERFORMANCE
+//             ====================================================== -->
 
-                        </div>
+//             <section class="dashboard-card class-performance-card">
 
-                    </div>
+//                 <div class="card-header">
 
+//                     <div>
 
-                    <p
-                        id="weatherDescription"
-                        class="weather-description"
-                    >
-                        Loading weather data...
-                    </p>
+//                         <h2>
+//                             Class Performance
+//                         </h2>
 
-                </section>
+//                         <p>
+//                             Average marks and exam performance
+//                         </p>
 
+//                     </div>
 
 
-                <!-- =========================
-                     ATTENDANCE
-                ========================== -->
+//                     <select
+//                         id="classPerformanceSelect"
+//                         class="class-select"
+//                     >
 
-                <section class="dashboard-card attendance-card">
+//                         ${classOptions}
 
-                    <div class="card-header">
+//                     </select>
 
-                        <div>
+//                 </div>
 
-                            <h2>
-                                Attendance Statistics
-                            </h2>
 
-                            <p>
-                                Students attendance by course
-                            </p>
+//                 <!-- =========================
+//                      SELECTED CLASS INFO
+//                 ========================== -->
 
-                        </div>
+//                 <div class="selected-class-info">
 
+//                     <h3 id="selectedClassName">
+//                         ${firstClass.name}
+//                     </h3>
 
-                        <button
-                            class="more-btn"
-                            type="button"
-                        >
+//                     <p id="selectedSubjectName">
+//                         ${firstSubject
+//             ? firstSubject.name
+//             : "No subject"}
+//                     </p>
 
-                            <i class="fa-solid fa-ellipsis"></i>
+//                 </div>
 
-                        </button>
 
-                    </div>
+//                 <!-- =========================
+//                      PERFORMANCE STATS
+//                 ========================== -->
 
+//                 <div
+//                     class="performance-stats"
+//                     id="performanceStats"
+//                 >
 
+//                     <div class="performance-stat">
 
-                    <div class="attendance-content">
+//                         <span>
+//                             Average Mark
+//                         </span>
 
+//                         <strong id="averageMark">
+//                             ${initialStats.average}%
+//                         </strong>
 
-                        <!-- Chart -->
+//                     </div>
 
-                        <div class="chart-container">
 
-                            <div
-                                class="attendance-chart"
-                                id="attendanceChart"
-                                style="
-                                    --attendance: ${overallAttendance}%;
-                                "
-                            >
+//                     <div class="performance-stat">
 
-                                <div class="chart-center">
+//                         <span>
+//                             Highest Mark
+//                         </span>
 
-                                    <strong>
-                                        ${overallAttendance}%
-                                    </strong>
+//                         <strong id="highestMark">
+//                             ${initialStats.highest}
+//                         </strong>
 
-                                    <span>
-                                        Overall
-                                    </span>
+//                     </div>
 
-                                </div>
 
-                            </div>
+//                     <div class="performance-stat">
 
-                        </div>
+//                         <span>
+//                             Lowest Mark
+//                         </span>
 
+//                         <strong id="lowestMark">
+//                             ${initialStats.lowest}
+//                         </strong>
 
+//                     </div>
 
-                        <!-- Course Statistics -->
 
-                        <div
-                            class="course-statistics"
-                            id="courseStatistics"
-                        >
+//                     <div class="performance-stat">
 
-                            ${courseStatistics}
+//                         <span>
+//                             Students Graded
+//                         </span>
 
-                        </div>
+//                         <strong id="gradedStudents">
+//                             ${initialStats.gradedStudents}
+//                             /
+//                             ${initialStats.totalStudents}
+//                         </strong>
 
+//                     </div>
 
-                    </div>
+//                 </div>
 
-                </section>
 
+//                 <!-- =========================
+//                      STUDENT MARKS
+//                 ========================== -->
 
-            </div>
+//                 <div
+//                     class="student-performance"
+//                     id="studentPerformance"
+//                 >
 
+//                     ${renderStudentMarks(initialStats.grades)}
 
+//                 </div>
 
-            <!-- =====================================================
-                 CLASS PERFORMANCE
-            ====================================================== -->
+//             </section>
 
-            <section class="dashboard-card class-performance-card">
+//         </section>
 
+//     `;
 
-                <!-- =========================
-                     CARD HEADER
-                ========================== -->
 
-                <div class="card-header">
+//     loadWeather();
 
-                    <div>
 
-                        <h2>
-                            Class Performance
-                        </h2>
+//     console.log(
+//         "Dashboard rendered successfully"
+//     );
 
-                        <p>
-                            Average marks and exam performance
-                        </p>
 
-                    </div>
+//     const classPerformanceSelect =
+//         document.getElementById(
+//             "classPerformanceSelect"
+//         );
 
 
-                    <!-- Class Selector -->
+//     classPerformanceSelect.addEventListener(
+//         "change",
+//         () => {
 
-                    <select
-                        id="classPerformanceSelect"
-                        class="class-select"
-                    >
+//             const selectedClassId =
+//                 classPerformanceSelect.value;
 
-                        ${classOptions}
+//             const stats =
+//                 calculateClassStats(
+//                     selectedClassId
+//                 );
 
-                    </select>
 
-                </div>
+//             const selectedClass =
+//                 seedData.classes.find(
+//                     classItem =>
+//                         classItem.id === selectedClassId
+//                 );
 
 
+//             document.getElementById(
+//                 "selectedClassName"
+//             ).textContent =
+//                 selectedClass
+//                     ? selectedClass.name
+//                     : "No class";
 
-                <!-- =========================
-                     SELECTED CLASS INFO
-                ========================== -->
 
-                <div class="selected-class-info">
+//             document.getElementById(
+//                 "selectedSubjectName"
+//             ).textContent =
+//                 stats.subject
+//                     ? stats.subject.name
+//                     : "No subject";
 
-                    <h3 id="selectedClassName">
-                        ${firstClass.name}
-                    </h3>
 
-                    <p id="selectedSubjectName">
-                        ${firstSubject ? firstSubject.name : "No subject"}
-                    </p>
+//             document.getElementById(
+//                 "averageMark"
+//             ).textContent =
+//                 `${stats.average}%`;
 
-                </div>
 
+//             document.getElementById(
+//                 "highestMark"
+//             ).textContent =
+//                 stats.highest;
 
 
-                <!-- =========================
-                     PERFORMANCE STATS
-                ========================== -->
+//             document.getElementById(
+//                 "lowestMark"
+//             ).textContent =
+//                 stats.lowest;
 
-                <div
-                    class="performance-stats"
-                    id="performanceStats"
-                >
 
+//             document.getElementById(
+//                 "gradedStudents"
+//             ).textContent =
+//                 `${stats.gradedStudents} / ${stats.totalStudents}`;
 
-                    <!-- Average -->
 
-                    <div class="performance-stat">
+//             document.getElementById(
+//                 "studentPerformance"
+//             ).innerHTML =
+//                 renderStudentMarks(
+//                     stats.grades
+//                 );
 
-                        <span>
-                            Average Mark
-                        </span>
+//         }
+//     );
 
-                        <strong id="averageMark">
-                            ${initialStats.average}%
-                        </strong>
 
-                    </div>
+//     const createHomeworkBtn =
+//         document.getElementById(
+//             "createHomeworkBtn"
+//         );
 
 
+//     if (createHomeworkBtn) {
 
-                    <div class="performance-stat">
+//         createHomeworkBtn.addEventListener(
+//             "click",
+//             () => {
 
-                        <span>
-                            Highest Mark
-                        </span>
+//                 console.log(
+//                     "Create Homework clicked"
+//                 );
 
-                        <strong id="highestMark">
-                            ${initialStats.highest}
-                        </strong>
+//             }
+//         );
 
-                    </div>
+//     }
 
+// }
 
-                    <!-- Lowest -->
 
-                    <div class="performance-stat">
+// function renderStudentMarks(grades) {
 
-                        <span>
-                            Lowest Mark
-                        </span>
+//     if (grades.length === 0) {
 
-                        <strong id="lowestMark">
-                            ${initialStats.lowest}
-                        </strong>
+//         return `
+//             <div class="no-grades">
+//                 No grades have been recorded for this class yet.
+//             </div>
+//         `;
 
-                    </div>
+//     }
 
 
-                    <!-- Students -->
+//     return grades.map(grade => {
 
-                    <div class="performance-stat">
+//         const student =
+//             seedData.students.find(
+//                 student =>
+//                     student.id === grade.studentId
+//             );
 
-                        <span>
-                            Students Graded
-                        </span>
 
-                        <strong id="gradedStudents">
-                            ${initialStats.gradedStudents}
-                            /
-                            ${initialStats.totalStudents}
-                        </strong>
+//         const studentName =
+//             student
+//                 ? student.fullName
+//                 : "Unknown Student";
 
-                    </div>
 
-                </div>
+//         return `
 
+//             <div class="student-mark-row">
 
+//                 <div class="student-name">
 
-                <!-- =========================
-                     STUDENT MARKS
-                ========================== -->
+//                     <span class="student-avatar">
+//                         ${studentName.charAt(0)}
+//                     </span>
 
-                <div
-                    class="student-performance"
-                    id="studentPerformance"
-                >
+//                     <span>
+//                         ${studentName}
+//                     </span>
 
-                    ${renderStudentMarks(initialStats.grades)}
+//                 </div>
 
-                </div>
 
+//                 <div class="student-mark">
 
-            </section>
+//                     <div class="mark-bar">
 
+//                         <div
+//                             class="mark-progress"
+//                             style="width: ${grade.mark}%"
+//                         ></div>
 
-        </section>
+//                     </div>
 
-    `;
+//                     <strong>
+//                         ${grade.mark}
+//                     </strong>
 
+//                 </div>
 
+//             </div>
 
-    loadWeather();
+//         `;
 
+//     }).join("");
 
-    console.log(
-        "Dashboard rendered successfully"
-    );
-
-
-
-    const classPerformanceSelect =
-        document.getElementById(
-            "classPerformanceSelect"
-        );
-
-
-    classPerformanceSelect.addEventListener(
-        "change",
-        () => {
-
-            const selectedClassId =
-                classPerformanceSelect.value;
-
-
-            const stats =
-                calculateClassStats(
-                    selectedClassId
-                );
-
-
-            // Find selected class
-            const selectedClass =
-                seedData.classes.find(
-                    classItem =>
-                        classItem.id === selectedClassId
-                );
-
-
-            // Update class name
-            document.getElementById(
-                "selectedClassName"
-            ).textContent =
-                selectedClass
-                    ? selectedClass.name
-                    : "No class";
-
-
-            // Update subject name
-            document.getElementById(
-                "selectedSubjectName"
-            ).textContent =
-                stats.subject
-                    ? stats.subject.name
-                    : "No subject";
-
-
-            // Update average
-            document.getElementById(
-                "averageMark"
-            ).textContent =
-                `${stats.average}%`;
-
-
-            // Update highest
-            document.getElementById(
-                "highestMark"
-            ).textContent =
-                stats.highest;
-
-
-            // Update lowest
-            document.getElementById(
-                "lowestMark"
-            ).textContent =
-                stats.lowest;
-
-
-            // Update graded students
-            document.getElementById(
-                "gradedStudents"
-            ).textContent =
-                `${stats.gradedStudents} / ${stats.totalStudents}`;
-
-
-            // Update students marks
-            document.getElementById(
-                "studentPerformance"
-            ).innerHTML =
-                renderStudentMarks(
-                    stats.grades
-                );
-
-        }
-    );
-
-
-
-
-    const createHomeworkBtn =
-        document.getElementById(
-            "createHomeworkBtn"
-        );
-
-
-    if (createHomeworkBtn) {
-
-        createHomeworkBtn.addEventListener(
-            "click",
-            () => {
-
-                console.log(
-                    "Create Homework clicked"
-                );
-
-            }
-        );
-
-    }
-
-}
-
-
-
-
-function renderStudentMarks(grades) {
-
-    if (grades.length === 0) {
-
-        return `
-            <div class="no-grades">
-                No grades have been recorded for this class yet.
-            </div>
-        `;
-
-    }
-
-
-    return grades.map(grade => {
-
-        const student =
-            seedData.students.find(
-                student =>
-                    student.id === grade.studentId
-            );
-
-
-        const studentName =
-            student
-                ? student.fullName
-                : "Unknown Student";
-
-
-        return `
-
-            <div class="student-mark-row">
-
-                <div class="student-name">
-
-                    <span class="student-avatar">
-                        ${studentName.charAt(0)}
-                    </span>
-
-                    <span>
-                        ${studentName}
-                    </span>
-
-                </div>
-
-
-                <div class="student-mark">
-
-                    <div class="mark-bar">
-
-                        <div
-                            class="mark-progress"
-                            style="width: ${grade.mark}%"
-                        ></div>
-
-                    </div>
-
-                    <strong>
-                        ${grade.mark}
-                    </strong>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }).join("");
-
-}
+// }
