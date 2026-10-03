@@ -10,31 +10,40 @@
 </head>
 <body>
 
-  <header class="hero-section">
-    <nav class="navbar">
-      <div class="logo">
-        <a href="./index.html">
-          <img src="./assets/imgs/evolvia_logo.png" alt="EduTrack Logo" class="logo-img" />
-          <span>EVOLVIA</span>
-        </a>
-      </div>
+ 
+<nav class="navbar">
+  <div class="logo">
+    <a href="./index.html">
+      <img src="./assets/imgs/evolvia_logo.png" alt="Evolvia Logo" class="logo-img" />
+      <span>EVOLVIA</span>
+    </a>
+  </div>
 
-      <div class="nav-actions">
-        <a href="./pages/login.html" class="btn btn-outline">Login</a>
-        <a href="./pages/register.html" class="btn btn-primary">Sign Up</a>
-      </div>
-    </nav>
+  <div class="nav-actions">
+    <a href="./pages/login.html" class="btn btn-outline">Login</a>
+    <a href="./pages/register.html" class="btn btn-primary">Sign Up</a>
+  </div>
+</nav>
 
-    <div class="hero-content reveal-on-scroll">
-      <h1>Effortlessly Manage Your Student's<br />Progress. Empower Your Teaching.</h1>
-      <p>
-        An intuitive SaaS for grade tracking, attendance, and feedback — designed specifically for educators.
-      </p>
-      <a href="./pages/register.html" class="btn btn-primary cta-btn">
-        Get Started <i class="fa-solid fa-arrow-right"></i>
-      </a>
-    </div>
-  </header>
+
+<header class="hero-section">
+ 
+  <div class="hero-bg">
+    <img src="./assets/imgs/home-bg.png" alt="Hero Background" class="hero-bg-img" />
+    <div class="hero-overlay"></div>
+  </div>
+
+ 
+  <div class="hero-content reveal-on-scroll">
+    <h1>Effortlessly Manage Your Student's<br />Progress. Empower Your Teaching.</h1>
+    <p>
+      An intuitive SaaS for grade tracking, attendance, and feedback — designed specifically for educators.
+    </p>
+    <a href="./pages/register.html" class="btn btn-primary cta-btn">
+      Get Started <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+</header>
 
   <main>
     <section class="why-us-section reveal-on-scroll">
@@ -265,7 +274,6 @@
     </div>
   </footer>
 
-  // Animation on Scrolling
   <script>
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
