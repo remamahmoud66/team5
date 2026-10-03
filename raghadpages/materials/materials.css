@@ -1,0 +1,219 @@
+/* تنسيقات خاصة بصفحة المواد - Materials CSS */
+
+/* زر الإضافة والتفاعل */
+.btn-primary {
+    background-color: #f97316;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: var(--radius-md, 6px);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #ea580c;
+}
+
+/* تنسيق جدول المواد */
+.table-container {
+    background: var(--color-surface, #ffffff);
+    border-radius: var(--radius-md, 8px);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+    overflow: hidden;
+    margin-top: var(--space-md, 16px);
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table-container th {
+    background-color: var(--color-bg, #f9fafb);
+    color: var(--color-muted, #6b7280);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.table-container td {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    color: var(--color-text, #1f2937);
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.table-container tr:last-child td {
+    border-bottom: none;
+}
+
+/* بادجات أنواع الملفات (PDF / LINK) */
+.status {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.status-danger {
+    background-color: #fee2e2;
+    color: #dc2626; /* مخصص للـ PDF */
+}
+
+.status-warning {
+    background-color: #fef3c7;
+    color: #d97706; /* مخصص للـ LINK */
+}
+
+/* أزرار الإجراءات داخل الجدول (Open & Delete) */
+.btn-secondary {
+    background-color: var(--color-bg, #f3f4f6);
+    color: var(--color-text, #374151);
+    border: 1px solid var(--color-border, #d1d5db);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm, 4px);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #e5e7eb;
+}
+
+.btn-danger {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm, 4px);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+    background-color: #fecaca;
+}
+
+/* صندوق البحث */
+.search-box input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px 14px;
+    border: 1px solid var(--color-border, #d1d5db);
+    border-radius: var(--radius-md, 6px);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: #f97316;
+}
+
+/* تنسيق الـ Modal (البوب أب) */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-box {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: var(--radius-lg, 12px);
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--color-muted);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--color-text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--color-border, #d1d5db);
+    border-radius: var(--radius-sm, 6px);
+    font-size: 14px;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #f97316;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.hidden {
+    display: none !important;
+}
