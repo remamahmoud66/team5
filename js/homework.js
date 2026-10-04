@@ -1,157 +1,72 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const initialClasses = [
-    { id: 'c1', name: 'JavaScript - Grade 10 A', subject: 'JavaScript' },
-    { id: 'c2', name: 'Python - Grade 11 B', subject: 'Python' },
-    { id: 'c3', name: 'Web Development - Grade 12 A', subject: 'Web Development' }
-  ];
+(function () {
+  'use strict';
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.EvolviaApp) return;
+    var teacher = EvolviaApp.getUser();
+    var classes = EvolviaApp.read('classes').filter(function (c) { return !c.teacherId || c.teacherId === teacher.id; });
+    var students = EvolviaApp.read('students');
+    var homework = EvolviaApp.read('homeworks').filter(function (h) { return !h.teacherId || h.teacherId === teacher.id; });
+    var statuses = EvolviaApp.read('homeworkStatuses');
+    var $ = function (id) { return document.getElementById(id); };
+    var filterClass = $('filter-class'), body = $('homework-table-body'), form = $('homework-form'), modal = $('homework-modal');
 
-  const initialStudents = {
-    c1: [
-      { id: 'STU001', name: 'Alex Johnson' }, { id: 'STU002', name: 'Maria Garcia' },
-      { id: 'STU003', name: 'Liam Smith' }, { id: 'STU004', name: 'Sophia Chen' },
-      { id: 'STU005', name: 'Noah Brown' }, { id: 'STU006', name: 'Emma Davis' },
-      { id: 'STU007', name: 'Oliver Wilson' }, { id: 'STU008', name: 'Ava Taylor' }
-    ],
-    c2: [
-      { id: 'STU009', name: 'Mason Lee' }, { id: 'STU010', name: 'Isabella Moore' },
-      { id: 'STU011', name: 'Ethan Clark' }, { id: 'STU012', name: 'Mia Hall' },
-      { id: 'STU013', name: 'Lucas Young' }
-    ],
-    c3: [
-      { id: 'STU014', name: 'Amelia King' }, { id: 'STU015', name: 'James Wright' },
-      { id: 'STU016', name: 'Harper Scott' }, { id: 'STU017', name: 'Henry Green' }
-    ]
-  };
-
-  const classes = JSON.parse(localStorage.getItem('edu_classes')) || initialClasses;
-  const students = JSON.parse(localStorage.getItem('edu_students')) || JSON.parse(JSON.stringify(initialStudents));
-  // Keep existing student records, but make the demo class large enough to show the requested 5/8 example.
-  if (!students.c1) students.c1 = [];
-  initialStudents.c1.forEach(seed => {
-    if (!students.c1.some(existing => existing.id === seed.id)) students.c1.push(seed);
+    function esc(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+    function classStudents(classId) {
+      var cls = classes.find(function (c) { return c.id === classId; });
+      var ids = cls && Array.isArray(cls.studentIds) ? cls.studentIds : [];
+      return students.filter(function (s) { return ids.includes(s.id); });
+    }
+    function getClass(id) { return classes.find(function (c) { return c.id === id; }); }
+    function getStatuses(hwId) { return statuses.filter(function (s) { return s.homeworkId === hwId; }); }
+    function summary(hw) {
+      var list = classStudents(hw.classId), studentIds = new Set(list.map(function (st) { return st.id; })), records = getStatuses(hw.id).filter(function (s) { return studentIds.has(s.studentId); }), submitted = records.filter(function (s) { return s.status === 'Submitted'; });
+      return { total:list.length, submitted:submitted.length, missing:Math.max(0, list.length-submitted.length), records:submitted };
+    }
+    function save() {
+      var allHomeworks = EvolviaApp.read('homeworks');
+      var currentIds = new Set(homework.map(function (h) { return h.id; }));
+      var preserved = allHomeworks.filter(function (h) { return !currentIds.has(h.id) && h.teacherId !== teacher.id; });
+      EvolviaApp.write('homeworks', preserved.concat(homework));
+      EvolviaApp.write('homeworkStatuses', statuses);
+      EvolviaApp.syncLegacyEduKeys();
+    }
+    function populateClasses() {
+      filterClass.innerHTML='<option value="">All Classes</option>';
+      $('homework-class').innerHTML='<option value="">Select a Class</option>';
+      classes.forEach(function (c) {
+        filterClass.insertAdjacentHTML('beforeend','<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>');
+        $('homework-class').insertAdjacentHTML('beforeend','<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>');
+      });
+    }
+    function renderStats() {
+      var visible = homework.filter(function (h) { return !h.isHidden && !h.isDeleted; });
+      var latest = visible[0], submittedEl=$('stat-submitted'), labelEl=$('stat-submitted-label');
+      if (!latest) { submittedEl.textContent='0 / 0'; labelEl.textContent='No active homework assignments'; $('stat-last-submissions').innerHTML='<div class="text-muted small">No submissions available</div>'; $('stat-not-submitted').innerHTML='<div class="text-muted small">No pending assignments</div>'; return; }
+      var s=summary(latest); submittedEl.textContent=s.submitted+' / '+s.total; labelEl.textContent=latest.title+' · '+(getClass(latest.classId)?.name||'Class');
+      var last3=s.records.slice().sort(function(a,b){return String(b.updatedAt||'').localeCompare(String(a.updatedAt||''));}).slice(0,3);
+      $('stat-last-submissions').innerHTML=last3.length?last3.map(function(r){var st=students.find(function(x){return x.id===r.studentId});return '<div class="stats-student-item"><span><strong>'+esc(st?.fullName||r.studentId)+'</strong></span><span class="badge badge-info">Submitted</span></div>';}).join(''):'<div class="text-muted small">No submissions yet</div>';
+      var missing=classStudents(latest.classId).filter(function(st){var r=getStatuses(latest.id).find(function(x){return x.studentId===st.id});return !r||r.status!=='Submitted';}).slice(0,4);
+      $('stat-not-submitted').innerHTML=missing.length?missing.map(function(st){return '<div class="stats-student-item"><span>'+esc(st.fullName)+'</span><span class="badge badge-danger">Pending</span></div>';}).join(''):'<div class="text-muted small">Everyone submitted</div>';
+    }
+    function renderTable() {
+      var term=String($('homework-search').value||'').toLowerCase().trim(), selected=filterClass.value;
+      var list=homework.filter(function(h){if(h.isHidden||h.isDeleted)return false;var cls=getClass(h.classId),name=String(cls?.name||'').toLowerCase();return (!selected||h.classId===selected)&&(!term||String(h.title||'').toLowerCase().includes(term)||name.includes(term));});
+      body.innerHTML=''; $('empty-state-container').innerHTML=''; $('homework-count').textContent=list.length+' assignment'+(list.length===1?'':'s');
+      list.forEach(function(hw,i){var cls=getClass(hw.classId),s=summary(hw),pct=s.total?Math.round(s.submitted/s.total*100):0; body.insertAdjacentHTML('beforeend','<tr><td><strong>'+String(i+1).padStart(2,'0')+'</strong></td><td><div class="exam-title-cell"><strong>'+esc(hw.title)+'</strong><small>'+esc(hw.description||'No description')+'</small></div></td><td>'+esc(cls?.name||'N/A')+'</td><td>'+esc(hw.deadline||'—')+'</td><td><strong>'+s.submitted+'/'+s.total+'</strong><div class="mini-progress"><span style="width:'+pct+'%"></span></div></td><td><span class="status-pill '+(s.missing===0?'status-complete':'status-pending')+'">'+(s.missing===0?'Complete':s.missing+' Pending')+'</span></td><td class="text-center"><button class="btn btn-secondary btn-enter-status" data-id="'+esc(hw.id)+'">Status</button><button class="btn btn-secondary btn-edit-homework" data-id="'+esc(hw.id)+'">Edit</button><button class="btn btn-secondary btn-delete-homework" data-id="'+esc(hw.id)+'">Delete</button></td></tr>');});
+      if(!list.length)$('empty-state-container').innerHTML='<div class="p-4 text-center text-muted">No homework assignments found.</div>';
+      renderStats();
+    }
+    function openModal(item){
+      modal.classList.remove('hidden');
+      if(item){$('modal-title').textContent='Edit Homework';$('homework-id').value=item.id;$('homework-class').value=item.classId;$('homework-title').value=item.title;$('homework-description').value=item.description||'';$('homework-due-date').value=item.deadline||'';$('homework-total-points').value=item.totalPoints||10;}
+      else {form.reset();$('homework-id').value='';$('modal-title').textContent='Create New Homework';}
+    }
+    function closeModal(){modal.classList.add('hidden');}
+    $('btn-open-create-modal').addEventListener('click',function(){openModal();});
+    document.querySelectorAll('.closeHomeworkModal').forEach(function(btn){btn.addEventListener('click',closeModal);});
+    form.addEventListener('submit',function(e){e.preventDefault();var id=$('homework-id').value, data={title:$('homework-title').value.trim(),classId:$('homework-class').value,description:$('homework-description').value.trim(),deadline:$('homework-due-date').value,totalPoints:Number($('homework-total-points').value),teacherId:teacher.id,isHidden:false};if(!data.classId||!data.title||!data.deadline)return;var existing;if(id){existing=homework.find(function(h){return h.id===id});if(existing)Object.assign(existing,data);}else{var allForId=EvolviaApp.read('homeworks');var max=allForId.reduce(function(m,h){return Math.max(m,Number(String(h.id||'').replace(/\D/g,''))||0)},0);existing=Object.assign({id:'HW'+String(max+1).padStart(3,'0')},data);homework.unshift(existing);EvolviaApp.ensureNotification('New homework "'+existing.title+'" created.','Homework',existing.id);};save();renderTable();closeModal();EvolviaApp.renderNotifications(teacher);});
+    body.addEventListener('click',function(e){var btn=e.target.closest('button');if(!btn)return;var id=btn.dataset.id,item=homework.find(function(h){return h.id===id});if(!item)return;if(btn.classList.contains('btn-enter-status'))location.href='homework-status.html?homeworkId='+encodeURIComponent(id);if(btn.classList.contains('btn-edit-homework'))openModal(item);if(btn.classList.contains('btn-delete-homework')){item.isHidden=true;save();renderTable();EvolviaApp.ensureNotification('Homework "'+item.title+'" was archived.','Homework',item.id);EvolviaApp.renderNotifications(teacher);}});
+    $('homework-search').addEventListener('input',renderTable);filterClass.addEventListener('change',renderTable);
+    populateClasses();renderTable();
   });
-  localStorage.setItem('edu_students', JSON.stringify(students));
-  let homework = JSON.parse(localStorage.getItem('edu_homeworks')) || [
-    { id:'HW001', title:'DOM Practice Task', description:'Build a small interactive DOM component.', classId:'c1', dueDate:'2026-10-04', totalPoints:10, isHidden:false },
-    { id:'HW002', title:'Local Storage Exercise', description:'Create, read, update and remove LocalStorage data.', classId:'c1', dueDate:'2026-10-07', totalPoints:15, isHidden:false },
-    { id:'HW003', title:'Python Functions Worksheet', description:'Practice function parameters and return values.', classId:'c2', dueDate:'2026-10-09', totalPoints:20, isHidden:false },
-    { id:'HW004', title:'Responsive Layout Challenge', description:'Create a responsive page using CSS Grid and Flexbox.', classId:'c3', dueDate:'2026-10-12', totalPoints:25, isHidden:false }
-  ];
-  let statuses = JSON.parse(localStorage.getItem('edu_homework_statuses')) || [];
-
-  // Demo: latest homework in c1 has exactly 5/8 submitted.
-  if (!statuses.some(s => s.homeworkId === 'HW001')) {
-    ['STU001','STU002','STU003','STU004','STU005'].forEach((studentId, i) => {
-      statuses.push({ homeworkId:'HW001', studentId, status:'Submitted', submittedAt:new Date(Date.now() - (i+1)*3600000).toISOString() });
-    });
-    saveStatuses();
-  }
-
-  const saveHomework = () => localStorage.setItem('edu_homeworks', JSON.stringify(homework));
-  function saveStatuses(){ localStorage.setItem('edu_homework_statuses', JSON.stringify(statuses)); }
-  const $ = id => document.getElementById(id);
-
-  const filterClass = $('filter-class'), homeworkBody = $('homework-table-body');
-  const modal = $('homework-modal'), form = $('homework-form');
-  const empty = $('empty-state-container');
-
-  function populateClasses(){
-    filterClass.innerHTML = '<option value="">All Classes</option>';
-    $('homework-class').innerHTML = '<option value="">Select a Class</option>';
-    classes.forEach(c => {
-      filterClass.insertAdjacentHTML('beforeend', `<option value="${c.id}">${escapeHtml(c.name)}</option>`);
-      $('homework-class').insertAdjacentHTML('beforeend', `<option value="${c.id}">${escapeHtml(c.name)}</option>`);
-    });
-  }
-
-  function escapeHtml(value){ return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
-  function getClass(id){ return classes.find(c => c.id === id); }
-  function getStudents(classId){ return students[classId] || []; }
-  function getStatuses(hwId){ return statuses.filter(s => s.homeworkId === hwId); }
-  function getStudentStatus(hwId, studentId){ return statuses.find(s => s.homeworkId === hwId && s.studentId === studentId); }
-
-  function summary(hw){
-    const list = getStudents(hw.classId);
-    const records = getStatuses(hw.id);
-    const submitted = records.filter(s => s.status === 'Submitted');
-    return { total:list.length, submitted:submitted.length, missing:Math.max(0,list.length-submitted.length), submittedRecords:submitted };
-  }
-
-  function renderStats(){
-    const visible = homework.filter(h => !h.isHidden);
-    const latest = visible[0];
-    if (!latest) return;
-    const s = summary(latest);
-    $('stat-submitted').textContent = `${s.submitted} / ${s.total}`;
-    $('stat-submitted-label').textContent = `${latest.title} · ${getClass(latest.classId)?.name || 'Class'}`;
-    const last3 = [...s.submittedRecords].sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt)).slice(0,3);
-    $('stat-last-submissions').innerHTML = last3.length ? last3.map(r => {
-      const stu = getStudents(latest.classId).find(x=>x.id===r.studentId);
-      return `<div class="stats-student-item"><span><strong>${escapeHtml(stu?.name || r.studentId)}</strong></span><span class="badge badge-info">${formatDate(r.submittedAt)}</span></div>`;
-    }).join('') : '<div class="text-muted small">No submissions yet</div>';
-    const missing = getStudents(latest.classId).filter(stu => !getStudentStatus(latest.id,stu.id) || getStudentStatus(latest.id,stu.id).status !== 'Submitted').slice(0,4);
-    $('stat-not-submitted').innerHTML = missing.length ? missing.map(stu=>`<div class="stats-student-item"><span>${escapeHtml(stu.name)}</span><span class="badge badge-danger">Pending</span></div>`).join('') : '<div class="text-muted small">Everyone submitted</div>';
-  }
-
-  function renderTable(){
-    const term = $('homework-search').value.toLowerCase().trim();
-    const selected = filterClass.value;
-    const list = homework.filter(h => {
-      if(h.isHidden) return false;
-      const cls = getClass(h.classId); const name = (cls?.name || '').toLowerCase();
-      return (!selected || h.classId === selected) && (!term || h.title.toLowerCase().includes(term) || name.includes(term));
-    });
-    homeworkBody.innerHTML='';
-    empty.innerHTML='';
-    $('homework-count').textContent = `${list.length} assignment${list.length===1?'':'s'}`;
-    list.forEach((hw,i)=>{
-      const cls=getClass(hw.classId); const s=summary(hw); const pct=s.total ? Math.round(s.submitted/s.total*100):0;
-      homeworkBody.insertAdjacentHTML('beforeend', `<tr>
-        <td><strong>${i+1}</strong></td>
-        <td><div class="exam-title-cell"><strong>${escapeHtml(hw.title)}</strong><small>${escapeHtml(hw.description || 'No description')}</small></div></td>
-        <td>${escapeHtml(cls?.name || 'N/A')}</td><td>${hw.dueDate}</td>
-        <td><strong>${s.submitted}/${s.total}</strong><div class="mini-progress"><span style="width:${pct}%"></span></div></td>
-        <td><span class="status-pill ${s.missing===0?'status-complete':'status-pending'}">${s.missing===0?'Complete':`Pending ${s.missing}`}</span></td>
-        <td class="table-actions">
-          <button class="btn-icon btn-info btn-enter-status" data-id="${hw.id}" title="Enter Status">✓</button>
-          <button class="btn-icon btn-secondary btn-edit-homework" data-id="${hw.id}" title="Edit Homework">✎</button>
-          <button class="btn-icon btn-danger btn-delete-homework" data-id="${hw.id}" title="Hide Homework">×</button>
-        </td>
-      </tr>`);
-    });
-    if(!list.length) empty.innerHTML='<div class="p-4 text-center text-muted">No homework found.</div>';
-    renderStats();
-  }
-
-  function openModal(edit){
-    if(edit){
-      $('modal-title').textContent='Edit Homework'; $('homework-id').value=edit.id;
-      $('homework-class').value=edit.classId; $('homework-title').value=edit.title;
-      $('homework-description').value=edit.description || ''; $('homework-due-date').value=edit.dueDate;
-      $('homework-total-points').value=edit.totalPoints || 10;
-    } else { form.reset(); $('homework-id').value=''; $('modal-title').textContent='Create New Homework'; }
-    modal.classList.remove('hidden');
-  }
-  function closeModal(){ modal.classList.add('hidden'); }
-
-  $('btn-open-create-modal').addEventListener('click',()=>openModal());
-  document.querySelectorAll('.closeHomeworkModal').forEach(b=>b.addEventListener('click',closeModal));
-  form.addEventListener('submit',e=>{
-    e.preventDefault();
-    const id=$('homework-id').value, data={title:$('homework-title').value.trim(),classId:$('homework-class').value,description:$('homework-description').value.trim(),dueDate:$('homework-due-date').value,totalPoints:Number($('homework-total-points').value)};
-    if(id){ const idx=homework.findIndex(h=>h.id===id); if(idx>-1) homework[idx]={...homework[idx],...data}; }
-    else { const n=homework.reduce((m,h)=>Math.max(m,Number(h.id.replace('HW',''))||0),0)+1; homework.unshift({id:`HW${String(n).padStart(3,'0')}`,...data,isHidden:false}); }
-    saveHomework(); renderTable(); closeModal();
-  });
-
-  homeworkBody.addEventListener('click',e=>{
-    const btn=e.target.closest('button'); if(!btn)return; const id=btn.dataset.id; const hw=homework.find(h=>h.id===id); if(!hw)return;
-    if(btn.classList.contains('btn-enter-status')) location.href=`homework-status.html?homeworkId=${encodeURIComponent(id)}`;
-    if(btn.classList.contains('btn-edit-homework')) openModal(hw);
-    if(btn.classList.contains('btn-delete-homework')){ hw.isHidden=true; saveHomework(); renderTable(); }
-  });
-  $('homework-search').addEventListener('input',renderTable); filterClass.addEventListener('change',renderTable);
-  populateClasses(); renderTable();
-});
-
-function formatDate(value){ return value ? new Date(value).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—'; }
+})();

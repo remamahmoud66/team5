@@ -69,7 +69,7 @@
 .summary-card {
     padding: 22px;
 
-    background-color: var(--color-surface);
+    background-color: var(--color-white);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
 
@@ -103,7 +103,7 @@
 
 
 .attendance-table-container {
-    background-color: var(--color-surface);
+    background-color: var(--color-white);
 
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
@@ -121,7 +121,7 @@
 
 
 .attendance-table thead {
-    background-color: #f7f5ef;
+    background-color: #f8fafc;
 }
 
 .attendance-table th {

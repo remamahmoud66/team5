@@ -1,13 +1,22 @@
-import { 
-    getClasses, 
-    getMaterials, 
-    saveMaterials 
+import {
+    getClasses,
+    getMaterials,
+    saveMaterials,
+    getCurrentTeacher
 } from '../js/storage.js';
 
 let pendingDeleteId = null;
 let activeClassId = "";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
+
+function localDateISO() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     const savedSearchQuery = sessionStorage.getItem("lastMaterialSearch") || "";
@@ -25,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupMaterialModalLogic();
     setupDeleteConfirmLogic();
     setupBackButton();
-    checkUserCookie();
 
     if (searchInput) {
         searchInput.addEventListener("input", (e) => {
@@ -35,34 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
-function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-}
-
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-
-function checkUserCookie() {
-    let currentUser = getCookie("evolvia_user");
-    if (!currentUser) {
-        setCookie("evolvia_user", "Instructor_Raghad", 604800);
-    }
-}
 
 function escapeHtml(value) {
     return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
@@ -87,24 +67,13 @@ function getFileType(fileName) {
 }
 
 function generateNextMaterialId() {
-    const materials = getMaterials();
-
-    if (materials.length === 0) {
-        return "mt_001";
-    }
-
-    let maxNumber = 0;
-    materials.forEach(mat => {
-        if (mat.id && mat.id.startsWith("mt_")) {
-            const numPart = parseInt(mat.id.replace("mt_", ""), 10);
-            if (!isNaN(numPart) && numPart > maxNumber) {
-                maxNumber = numPart;
-            }
-        }
-    });
-
-    const nextNum = maxNumber + 1;
-    return `mt_${String(nextNum).padStart(3, '0')}`;
+    let materials = [];
+    try { const parsed = JSON.parse(localStorage.getItem("materials") || "[]"); materials = Array.isArray(parsed) ? parsed : []; } catch { materials = []; }
+    const maxNumber = materials.reduce((max, mat) => {
+        const number = Number(String(mat.id || "").replace(/\D/g, ""));
+        return Number.isFinite(number) ? Math.max(max, number) : max;
+    }, 0);
+    return `MAT${String(maxNumber + 1).padStart(3, "0")}`;
 }
 
 function loadMaterialsUI(query = "", classIdFilter = "") {
@@ -115,18 +84,12 @@ function loadMaterialsUI(query = "", classIdFilter = "") {
     const materials = getMaterials();
     const classes = getClasses();
 
-    let targetClassName = "";
-    if (classIdFilter) {
-        const foundCls = classes.find(c => c.id === classIdFilter);
-        if (foundCls) targetClassName = foundCls.name;
-    }
-
     let filteredMaterials = materials.filter(m => {
         const matchesQuery = query ? (m.title && m.title.toLowerCase().includes(query.toLowerCase())) : true;
 
         let matchesClass = true;
         if (classIdFilter) {
-            matchesClass = (m.classId === classIdFilter) || (m.className === targetClassName) || (m.className === classIdFilter);
+            matchesClass = m.classId === classIdFilter;
         }
         return matchesQuery && matchesClass;
     });
@@ -147,6 +110,9 @@ function loadMaterialsUI(query = "", classIdFilter = "") {
         const num = parseInt(String(mat.id || "").replace(/\D/g, ""), 10) || (index + 1);
         const counter = String(num).padStart(2, "0");
 
+        const materialClass = classes.find(c => c.id === mat.classId);
+        const materialClassName = materialClass?.name || 'General Class';
+
         tr.innerHTML = `
             <td class="material-number">${counter}</td>
             <td>
@@ -154,7 +120,7 @@ function loadMaterialsUI(query = "", classIdFilter = "") {
                 <small style="color: var(--color-muted);">${escapeHtml(mat.description || '')}</small>
             </td>
             <td><span class="status ${typeClass}" style="padding: 2px 8px; font-size: 11px; border-radius: 4px;">${escapeHtml(mat.type || 'PDF')}</span></td>
-            <td>${escapeHtml(mat.className || 'General Class')}</td>
+            <td>${escapeHtml(materialClassName)}</td>
             <td>${escapeHtml(mat.createdAt || 'N/A')}</td>
             <td>
                 <div style="display: flex; gap: 8px;">
@@ -187,7 +153,7 @@ function loadMaterialsUI(query = "", classIdFilter = "") {
                                     <div class="container">
                                         <h1>${escapeHtml(mat.title)}</h1>
                                         <p><strong>Description:</strong> ${escapeHtml(mat.description || 'No description provided.')}</p>
-                                        <p><strong>Class:</strong> ${escapeHtml(mat.className || 'General Class')} | <strong>Type:</strong> ${escapeHtml(mat.type)}</p>
+                                        <p><strong>Class:</strong> ${escapeHtml(materialClassName)} | <strong>Type:</strong> ${escapeHtml(mat.type)}</p>
                                         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
                                         <div class="file-box">
                                             ${mat.fileMime && mat.fileMime.startsWith('image/') 
@@ -251,9 +217,18 @@ function setupMaterialModalLogic() {
 
     if (!modal || !form) return;
 
+    const classSelect = document.getElementById("materialClassInput");
+    const availableClasses = getClasses();
+    if (classSelect) {
+        classSelect.innerHTML = '<option value="">Select a Class</option>';
+        availableClasses.forEach((c) => classSelect.add(new Option(c.name || c.id, c.id)));
+        if (activeClassId && availableClasses.some((c) => c.id === activeClassId)) classSelect.value = activeClassId;
+    }
+
     if (openBtn) {
         openBtn.addEventListener("click", () => {
             form.reset();
+            if (classSelect && activeClassId && availableClasses.some((c) => c.id === activeClassId)) classSelect.value = activeClassId;
             modal.classList.add("active");
         });
     }
@@ -288,14 +263,11 @@ function setupMaterialModalLogic() {
             return;
         }
 
-        const classId = activeClassId;
-
-        let className = "";
-        if (classId) {
-            const classes = getClasses();
-            const matchedClass = classes.find(c => c.id === classId);
-            if (matchedClass) className = matchedClass.name;
-        }
+        const classId = document.getElementById("materialClassInput")?.value || "";
+        const classes = getClasses();
+        const matchedClass = classes.find(c => c.id === classId);
+        if (!classId) { alert("Please select a class."); return; }
+        const teacher = getCurrentTeacher();
 
         const reader = new FileReader();
 
@@ -306,16 +278,17 @@ function setupMaterialModalLogic() {
         reader.onload = () => {
             const newMaterial = {
                 id: generateNextMaterialId(),
-                classId: classId,
+                classId: classId || null,
+                subjectId: matchedClass?.subjectId || null,
+                teacherId: teacher?.id || null,
                 title,
                 description,
                 type: getFileType(file.name),
-                className,
                 link: "",
                 fileName: file.name,
                 fileMime: file.type || "application/octet-stream",
                 fileData: reader.result,
-                createdAt: new Date().toISOString().split('T')[0]
+                createdAt: localDateISO()
             };
 
             const materials = getMaterials();
@@ -367,13 +340,6 @@ function setupDeleteConfirmLogic() {
             let materials = getMaterials();
 
             materials = materials.filter(m => m.id !== pendingDeleteId);
-            materials = materials.map((mat, index) => {
-                return {
-                    ...mat,
-                    id: `mt_${String(index + 1).padStart(3, '0')}`
-                };
-            });
-
             saveMaterials(materials);
             closeConfirm();
 
