@@ -52,12 +52,11 @@ registerForm.addEventListener('submit', (event) => {
 
 
     
-    let teacherId = `T00${currentTeachers.length+1}`;
-    if(currentTeachers.length >= 10){
-        teacherId = `T0${currentTeachers.length}`
-    } else if(currentTeachers.length >= 100){
-        teacherId = `T${currentTeachers.length}`
-    }
+    const maxTeacherNumber = currentTeachers.reduce((max, teacher) => {
+        const match = String(teacher.id || '').match(/^T(\d+)$/i);
+        return Math.max(max, match ? Number(match[1]) : 0);
+    }, 0);
+    const teacherId = `T${String(maxTeacherNumber + 1).padStart(3, '0')}`;
 
     const newTeacher = {
         id:teacherId,
@@ -75,7 +74,7 @@ registerForm.addEventListener('submit', (event) => {
     notyf.success('Account created successfully!');
     
     setTimeout(()=>{
-        window.location.href = '../login.html';
+        window.location.href = './login.html';
     }, 1200)
 
     registerForm.reset();
@@ -162,12 +161,12 @@ function validataPhoneNum(){
     return false;
    }
 
-    // const isPhoneExist = getTeachers().find( teacher => teacher.phone === phone.value.trim());
-    // if(isPhoneExist){
-    //     phoneMessage.textContent = 'This number is already registered.';
-    //     phone.style.borderColor = '#EF4444';
-    //     return false;
-    // }
+    const isPhoneExist = getTeachers().find((teacher) => String(teacher.phone || '').trim() === phoneValue);
+    if(isPhoneExist){
+        phoneMessage.textContent = 'This number is already registered.';
+        phone.style.borderColor = '#EF4444';
+        return false;
+    }
    
    phoneMessage.textContent = "";
    phone.style.borderColor = '#E5E7EB';

@@ -361,3 +361,34 @@
   min-width: 120px;
   text-align: center;
 }
+/* Rounded status button styling */
+.status-toggle-badge {
+  cursor: pointer;
+  user-select: none;
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+  border: 1px solid transparent;
+  border-radius: 20px; /* Adjust border-radius as needed */
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.status-toggle-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.status-toggle-badge.status-complete {
+  background-color: #e8f7ef;
+  color: #147a45;
+  border-color: #34d399;
+}
+
+.status-toggle-badge.status-pending {
+  background-color: #fff3df;
+  color: #9a5a00;
+  border-color: #f59e0b;
+}

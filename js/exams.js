@@ -1,71 +1,126 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // ==========================================
-  // INITIAL SEED DATA & LOCAL STORAGE
-  // ==========================================
-  const initialClasses = [
-    { id: "c1", name: "JavaScript - Grade 10 A", subject: "JavaScript" },
-    { id: "c2", name: "Python - Grade 11 B", subject: "Python" },
-    {
-      id: "c3",
-      name: "Web Development - Grade 12 A",
-      subject: "Web Development",
-    },
-  ];
+import { getCurrentTeacher } from "./data.js";
 
-  const initialStudents = {
-    c1: [
-      { id: "STU001", name: "Alex Johnson" },
-      { id: "STU002", name: "Maria Garcia" },
-      { id: "STU003", name: "Liam Smith" },
-    ],
-    c2: [
-      { id: "STU004", name: "Sophia Chen" },
-      { id: "STU005", name: "Noah Brown" },
-    ],
-    c3: [
-      { id: "STU006", name: "Emma Davis" },
-      { id: "STU007", name: "Oliver Wilson" },
-    ],
+function localDateISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const teacher = getCurrentTeacher();
+  if (!teacher) {
+    window.location.href = "./login.html";
+    return;
+  }
+
+  const read = (key, fallback = []) => {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      return Array.isArray(value) ? value : fallback;
+    } catch {
+      return fallback;
+    }
   };
 
-  const initialExams = [
-    {
-      id: "EX001",
-      title: "JavaScript Midterm",
-      description: "DOM, Events and Storage",
-      classId: "c1",
-      date: "2026-10-05",
-      totalMarks: 100,
-      grades: { STU001: 95, STU002: 88, STU003: 52 },
-      isHidden: false,
-    },
-  ];
+  const write = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+    return value;
+  };
 
-  let classes =
-    JSON.parse(localStorage.getItem("edu_classes")) || initialClasses;
-  let students =
-    JSON.parse(localStorage.getItem("edu_students")) || initialStudents;
-  let exams = JSON.parse(localStorage.getItem("edu_exams")) || initialExams;
+  const classes = read("classes").filter((item) => item.teacherId === teacher.id);
+  const allStudents = read("students");
+  const subjects = read("subjects");
+  let exams = read("exams").filter((item) => item.teacherId === teacher.id && !item.isDeleted);
+  let grades = read("grades");
 
-  const saveExams = () =>
-    localStorage.setItem("edu_exams", JSON.stringify(exams));
+  const classMap = new Map(classes.map((item) => [item.id, item]));
+  const subjectMap = new Map(subjects.map((item) => [item.id, item]));
+  const studentMap = new Map(allStudents.map((item) => [item.id, item]));
 
-  // ==========================================
-  // DOM ELEMENTS
-  // ==========================================
+  const saveExams = () => {
+    const allExams = read("exams");
+    const otherExams = allExams.filter((item) => item.teacherId !== teacher.id);
+    write("exams", [...otherExams, ...exams]);
+    if (window.EvolviaApp?.syncLegacyEduKeys) window.EvolviaApp.syncLegacyEduKeys();
+  };
+
+  const saveGrades = () => {
+    write("grades", grades);
+    if (window.EvolviaApp?.syncLegacyEduKeys) window.EvolviaApp.syncLegacyEduKeys();
+  };
+
+  const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;",
+  }[char]));
+
+  const classStudents = (classId) => {
+    const cls = classMap.get(classId);
+    if (!cls) return [];
+    return (cls.studentIds || [])
+      .map((id) => studentMap.get(id))
+      .filter(Boolean);
+  };
+
+  const gradesForExam = (examId) => grades.filter((grade) => grade.examId === examId);
+
+  const gradeMapForExam = (examId) => {
+    const map = new Map();
+    gradesForExam(examId).forEach((grade) => map.set(grade.studentId, Number(grade.mark)));
+    return map;
+  };
+
+  const calculateAverage = (exam) => {
+    const rosterIds = new Set(classStudents(exam.classId).map((student) => student.id));
+    const values = gradesForExam(exam.id)
+      .filter((grade) => rosterIds.has(grade.studentId))
+      .map((grade) => Number(grade.mark))
+      .filter((value) => Number.isFinite(value));
+    if (!values.length) return null;
+    return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+  };
+
+  const upsertTeacherNotification = (exam, action = "scheduled") => {
+    if (!window.EvolviaApp?.ensureNotification) return;
+    window.EvolviaApp.ensureNotification({
+      id: `teacher-exam-${teacher.id}-${exam.id}-${action}`,
+      teacherId: teacher.id,
+      type: "Exam",
+      relatedId: exam.id,
+      text: `${exam.title} has been ${action} for ${classMap.get(exam.classId)?.name || "your class"}.`,
+      date: exam.date || localDateISO(),
+    });
+  };
+
+  const ensureUpcomingExamNotifications = () => {
+    if (!window.EvolviaApp?.ensureNotification) return;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    exams.forEach((exam) => {
+      if (!exam.date) return;
+      const examDate = new Date(`${exam.date}T00:00:00`);
+      if (Number.isNaN(examDate.getTime())) return;
+      const days = Math.ceil((examDate - today) / 86400000);
+      if (days >= 0 && days <= 7) {
+        upsertTeacherNotification(exam, "scheduled");
+      }
+    });
+  };
+
   const examsTableBody = document.getElementById("exams-table-body");
   const emptyStateContainer = document.getElementById("empty-state-container");
   const searchInput = document.getElementById("exam-search");
   const filterClassSelect = document.getElementById("filter-class");
   const activeExamsCountEl = document.getElementById("active-exams-count");
-
-  // Stats Elements
   const statBestClassEl = document.getElementById("stat-best-class");
   const statBestClassNameEl = document.getElementById("stat-best-class-name");
   const statTopStudentsEl = document.getElementById("stat-top-students");
   const statLowStudentsEl = document.getElementById("stat-low-students");
-
-  // Modal Elements
   const examModal = document.getElementById("exam-modal");
   const btnOpenCreateModal = document.getElementById("btn-open-create-modal");
   const examForm = document.getElementById("exam-form");
@@ -76,645 +131,265 @@ document.addEventListener("DOMContentLoaded", () => {
   const examDescInput = document.getElementById("exam-description");
   const examDateInput = document.getElementById("exam-date");
   const examMarksInput = document.getElementById("exam-total-marks");
-
-  // Grades Modal
   const gradesModal = document.getElementById("grades-modal");
   const gradesForm = document.getElementById("grades-form");
   const gradesModalTitle = document.getElementById("grades-modal-title");
   const gradesModalSubtitle = document.getElementById("grades-modal-subtitle");
   const maxMarksLabel = document.getElementById("max-marks-label");
   const gradesTableBody = document.getElementById("grades-table-body");
-
   let currentGradeExamId = null;
 
-  // ==========================================
-  // CALCULATION & ANALYTICS HELPERS
-  // ==========================================
-  const calculateAverage = (grades) => {
-    const values = Object.values(grades || {})
-      .map(Number)
-      .filter((v) => !isNaN(v));
-    if (!values.length) return null;
-    const sum = values.reduce((acc, curr) => acc + curr, 0);
-    return Math.round(sum / values.length);
+  const openModal = (modal) => modal?.classList.remove("hidden");
+  const closeModal = (modal) => modal?.classList.add("hidden");
+
+  const populateClassDropdowns = () => {
+    if (filterClassSelect) {
+      filterClassSelect.innerHTML = '<option value="">All Classes</option>';
+      classes.forEach((cls) => {
+        filterClassSelect.insertAdjacentHTML(
+          "beforeend",
+          `<option value="${escapeHtml(cls.id)}">${escapeHtml(cls.name)}</option>`,
+        );
+      });
+    }
+    if (examClassSelect) {
+      examClassSelect.innerHTML = '<option value="">Select a Class</option>';
+      classes.forEach((cls) => {
+        examClassSelect.insertAdjacentHTML(
+          "beforeend",
+          `<option value="${escapeHtml(cls.id)}">${escapeHtml(cls.name)}</option>`,
+        );
+      });
+    }
   };
 
   const updateDashboardStats = () => {
-    if (!exams || exams.length === 0) return;
-
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
-    const getExamMonthKey = (dateStr) => {
-      if (!dateStr) return null;
-      const date = new Date(dateStr);
-      return isNaN(date.getTime())
-        ? null
-        : `${date.getFullYear()}-${date.getMonth()}`;
+    const visibleExams = exams.filter((exam) => !exam.isHidden && !exam.isDeleted);
+    const monthKey = (date) => {
+      const parsed = new Date(`${date}T00:00:00`);
+      return Number.isNaN(parsed.getTime()) ? null : `${parsed.getFullYear()}-${parsed.getMonth()}`;
     };
+    const now = new Date();
+    const currentKey = `${now.getFullYear()}-${now.getMonth()}`;
+    const available = visibleExams.map((exam) => monthKey(exam.date)).filter(Boolean).sort().reverse();
+    const targetKey = available.includes(currentKey) ? currentKey : (available[0] || currentKey);
+    const targetExams = visibleExams.filter((exam) => monthKey(exam.date) === targetKey);
 
-    const currentDate = new Date();
-    const currentMonthKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
-
-    const availableMonthKeys = exams
-      .map((e) => getExamMonthKey(e.date))
-      .filter(Boolean)
-      .sort()
-      .reverse();
-
-    let targetMonthKey = currentMonthKey;
-    if (
-      !availableMonthKeys.includes(currentMonthKey) &&
-      availableMonthKeys.length > 0
-    ) {
-      targetMonthKey = availableMonthKeys[0];
-    }
-
-    const [targetYear, targetMonthIdx] = targetMonthKey.split("-").map(Number);
-    const targetMonthName = `${monthNames[targetMonthIdx]} ${targetYear}`;
-
-    const monthExams = exams.filter(
-      (e) => getExamMonthKey(e.date) === targetMonthKey,
-    );
-
-    const classAverages = {};
-
-    classes.forEach((cls) => {
-      const classExams = monthExams.filter(
-        (e) => e.classId === cls.id && !e.isHidden && !e.isDeleted,
-      );
-      const classStudentsList = students[cls.id] || [];
-      const totalStudentsCount = classStudentsList.length;
-
-      if (totalStudentsCount === 0 || classExams.length === 0) return;
-
-      let totalClassMarksEarned = 0.0;
-      let totalClassMaxPossible = 0.0;
-
-      classExams.forEach((exam) => {
-        if (!exam.totalMarks || exam.totalMarks <= 0) return;
-
-        const examMaxMarks = parseFloat(exam.totalMarks);
-
-        if (exam.grades) {
-          Object.values(exam.grades).forEach((mark) => {
-            const earned = parseFloat(mark);
-            if (!isNaN(earned)) {
-              totalClassMarksEarned += earned;
-            }
-          });
-        }
-
-        totalClassMaxPossible += examMaxMarks * totalStudentsCount;
+    const classAverages = classes.map((cls) => {
+      const rosterIds = new Set(classStudents(cls.id).map((student) => student.id));
+      const clsExams = targetExams.filter((exam) => exam.classId === cls.id);
+      let earned = 0;
+      let possible = 0;
+      clsExams.forEach((exam) => {
+        const validGrades = gradesForExam(exam.id).filter((grade) => rosterIds.has(grade.studentId));
+        possible += Number(exam.totalMarks || 0) * validGrades.length;
+        earned += validGrades.reduce((sum, grade) => sum + Number(grade.mark || 0), 0);
       });
+      return possible ? { name: cls.name, percentage: Math.round((earned / possible) * 100) } : null;
+    }).filter(Boolean);
 
-      if (totalClassMaxPossible > 0) {
-        const classAveragePercentage = Math.round(
-          (totalClassMarksEarned / totalClassMaxPossible) * 100,
-        );
-        classAverages[cls.id] = {
-          name: cls.name,
-          avgPercentage: classAveragePercentage,
-        };
-      }
-    });
+    classAverages.sort((a, b) => b.percentage - a.percentage);
+    const best = classAverages[0];
+    if (statBestClassEl) statBestClassEl.textContent = best ? `${best.percentage}%` : "N/A";
+    if (statBestClassNameEl) statBestClassNameEl.textContent = best ? `${best.name} — class average` : "No graded exams yet";
 
-    let bestClass = null;
-    Object.values(classAverages).forEach((item) => {
-      if (!bestClass || item.avgPercentage > bestClass.avgPercentage) {
-        bestClass = item;
-      }
-    });
-
-    if (bestClass) {
-      if (statBestClassEl)
-        statBestClassEl.textContent = `${bestClass.avgPercentage}%`;
-      if (statBestClassNameEl)
-        statBestClassNameEl.textContent = `${bestClass.name} (${targetMonthName})`;
-    } else {
-      if (statBestClassEl) statBestClassEl.textContent = "N/A";
-      if (statBestClassNameEl)
-        statBestClassNameEl.textContent = `No graded exams in ${targetMonthName}`;
-    }
-
-    const studentAggregates = {};
-
-    exams.forEach((exam) => {
-      if (exam.isHidden || exam.isDeleted || !exam.grades || !exam.totalMarks)
-        return;
-
-      const classStudents = students[exam.classId] || [];
-      const totalPossibleMarks = parseFloat(exam.totalMarks);
-
-      Object.entries(exam.grades).forEach(([stuId, mark]) => {
-        if (mark === null || mark === undefined || mark === "") return;
-
-        const earnedMark = parseFloat(mark);
-        if (isNaN(earnedMark)) return;
-
-        const compositeKey = `${exam.classId}_${stuId}`;
-        const studentObj = classStudents.find((s) => s.id === stuId);
-        const studentName = studentObj ? studentObj.name : stuId;
-
-        if (!studentAggregates[compositeKey]) {
-          studentAggregates[compositeKey] = {
-            name: studentName,
-            totalEarned: 0.0,
-            totalPossible: 0.0,
-          };
-        }
-
-        studentAggregates[compositeKey].totalEarned += earnedMark;
-        studentAggregates[compositeKey].totalPossible += totalPossibleMarks;
+    const aggregates = new Map();
+    visibleExams.forEach((exam) => {
+      const rosterIds = new Set(classStudents(exam.classId).map((student) => student.id));
+      gradesForExam(exam.id).filter((grade) => rosterIds.has(grade.studentId)).forEach((grade) => {
+        const key = `${exam.classId}-${grade.studentId}`;
+        const entry = aggregates.get(key) || { name: studentMap.get(grade.studentId)?.fullName || grade.studentId, earned: 0, possible: 0 };
+        entry.earned += Number(grade.mark || 0);
+        entry.possible += Number(exam.totalMarks || 0);
+        aggregates.set(key, entry);
       });
     });
 
-    const smartStudents = [];
-    const weakStudents = [];
-
-    Object.values(studentAggregates).forEach((stu) => {
-      if (stu.totalPossible > 0) {
-        const overallScore = parseFloat(
-          ((stu.totalEarned / stu.totalPossible) * 100).toFixed(1),
-        );
-
-        if (overallScore > 95.0) {
-          smartStudents.push({ name: stu.name, score: overallScore });
-        } else if (overallScore < 50.0) {
-          weakStudents.push({ name: stu.name, score: overallScore });
-        }
-      }
-    });
+    const ranked = [...aggregates.values()]
+      .filter((item) => item.possible > 0)
+      .map((item) => ({ ...item, percentage: Number(((item.earned / item.possible) * 100).toFixed(1)) }));
+    const top = ranked.filter((item) => item.percentage > 95).sort((a, b) => b.percentage - a.percentage);
+    const low = ranked.filter((item) => item.percentage < 50).sort((a, b) => a.percentage - b.percentage);
 
     if (statTopStudentsEl) {
-      statTopStudentsEl.innerHTML = "";
-      if (smartStudents.length === 0) {
-        statTopStudentsEl.innerHTML =
-          '<div class="text-muted small">No students (&gt;95%)</div>';
-      } else {
-        smartStudents.forEach((stu) => {
-          const item = document.createElement("div");
-          item.className = "stats-student-item";
-          item.innerHTML = `
-            <span><strong>${stu.name}</strong></span>
-            <span class="badge badge-info">${stu.score}%</span>
-          `;
-          statTopStudentsEl.appendChild(item);
-        });
-      }
+      statTopStudentsEl.innerHTML = top.length ? top.map((item) => `<div class="stats-student-item"><span><strong>${escapeHtml(item.name)}</strong></span><span class="badge badge-info">${item.percentage}%</span></div>`).join("") : '<div class="text-muted small">No students above 95%</div>';
     }
-
     if (statLowStudentsEl) {
-      statLowStudentsEl.innerHTML = "";
-      if (weakStudents.length === 0) {
-        statLowStudentsEl.innerHTML =
-          '<div class="text-muted small">No students (&lt;50%)</div>';
-      } else {
-        weakStudents.forEach((stu) => {
-          const item = document.createElement("div");
-          item.className = "stats-student-item";
-          item.innerHTML = `
-            <span><strong>${stu.name}</strong></span>
-            <span class="badge badge-danger">${stu.score}%</span>
-          `;
-          statLowStudentsEl.appendChild(item);
-        });
-      }
+      statLowStudentsEl.innerHTML = low.length ? low.map((item) => `<div class="stats-student-item"><span><strong>${escapeHtml(item.name)}</strong></span><span class="badge badge-danger">${item.percentage}%</span></div>`).join("") : '<div class="text-muted small">No students below 50%</div>';
     }
   };
 
-  const populateClassDropdowns = () => {
-    if (!filterClassSelect || !examClassSelect) return;
-
-    filterClassSelect.innerHTML = '<option value="">All Classes</option>';
-    examClassSelect.innerHTML = '<option value="">Select a Class</option>';
-
-    classes.forEach((c) => {
-      const opt1 = document.createElement("option");
-      opt1.value = c.id;
-      opt1.textContent = c.name;
-      filterClassSelect.appendChild(opt1);
-
-      const opt2 = document.createElement("option");
-      opt2.value = c.id;
-      opt2.textContent = c.name;
-      examClassSelect.appendChild(opt2);
-    });
-  };
-
-  // ==========================================
-  // RENDER TABLE & STATS
-  // ==========================================
   const renderExams = () => {
-    const searchTerm = searchInput
-      ? searchInput.value.toLowerCase().trim()
-      : "";
-    const selectedClass = filterClassSelect ? filterClassSelect.value : "";
-
+    const searchTerm = searchInput?.value.toLowerCase().trim() || "";
+    const selectedClass = filterClassSelect?.value || "";
     const filtered = exams.filter((exam) => {
-      if (exam.isHidden) return false;
-
-      const cls = classes.find((c) => c.id === exam.classId);
-      const className = cls ? cls.name.toLowerCase() : "";
-      const matchesSearch =
-        exam.title.toLowerCase().includes(searchTerm) ||
-        className.includes(searchTerm);
-      const matchesClass =
-        selectedClass === "" || exam.classId === selectedClass;
-      return matchesSearch && matchesClass;
+      if (exam.isHidden || exam.isDeleted) return false;
+      const cls = classMap.get(exam.classId);
+      const subject = subjectMap.get(exam.subjectId);
+      const haystack = [exam.title, exam.description, cls?.name, subject?.name].filter(Boolean).join(" ").toLowerCase();
+      return (!searchTerm || haystack.includes(searchTerm)) && (!selectedClass || exam.classId === selectedClass);
     });
 
     if (examsTableBody) {
-      examsTableBody.innerHTML = "";
-
-      if (filtered.length === 0) {
-        emptyStateContainer.innerHTML =
-          '<div class="p-4 text-center text-muted">No exams found.</div>';
-      } else {
-        emptyStateContainer.innerHTML = "";
-        filtered.forEach((exam, index) => {
-          const cls = classes.find((c) => c.id === exam.classId) || {
-            name: "N/A",
-            subject: "N/A",
-          };
-          const avgMarks = calculateAverage(exam.grades);
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td><strong>${index + 1}</strong></td>
-            <td>
-              <div class="exam-title-cell">
-                <strong>${exam.title}</strong>
-                <small>${exam.description || "No description"}</small>
-              </div>
-            </td>
-            <td>${cls.name}</td>
-            <td>${cls.subject}</td>
-            <td>${exam.date}</td>
-            <td>${avgMarks !== null ? `${avgMarks} /${exam.totalMarks}` : "N/A"}</td>
-            <td class="table-actions">
-              <button class="btn-icon btn-info btn-enter-grades" data-id="${exam.id}" title="Enter Grades">✓</button>
-              <button class="btn-icon btn-secondary btn-edit-exam" data-id="${exam.id}" title="Edit Exam">✎</button>
-              <button class="btn-icon btn-danger btn-delete-exam" data-id="${exam.id}" title="Delete Exam">×</button>
-            </td>
-          `;
-          examsTableBody.appendChild(tr);
-        });
-      }
+      examsTableBody.innerHTML = filtered.map((exam, index) => {
+        const cls = classMap.get(exam.classId);
+        const subject = subjectMap.get(exam.subjectId) || subjectMap.get(cls?.subjectId);
+        const average = calculateAverage(exam);
+        return `<tr>
+          <td><strong>${index + 1}</strong></td>
+          <td><div class="exam-title-cell"><strong>${escapeHtml(exam.title)}</strong><small>${escapeHtml(exam.description || "No description")}</small></div></td>
+          <td>${escapeHtml(cls?.name || "N/A")}</td>
+          <td>${escapeHtml(subject?.name || "N/A")}</td>
+          <td>${escapeHtml(exam.date || "—")}</td>
+          <td>${average !== null ? `${average} / ${Number(exam.totalMarks || 0)}` : "N/A"}</td>
+          <td class="table-actions">
+            <button type="button" class="btn-icon btn-info btn-enter-grades" data-id="${escapeHtml(exam.id)}" title="Enter Grades">✓</button>
+            <button type="button" class="btn-icon btn-secondary btn-edit-exam" data-id="${escapeHtml(exam.id)}" title="Edit Exam">✎</button>
+            <button type="button" class="btn-icon btn-danger btn-delete-exam" data-id="${escapeHtml(exam.id)}" title="Archive Exam">×</button>
+          </td>
+        </tr>`;
+      }).join("");
     }
 
-    if (activeExamsCountEl) {
-      activeExamsCountEl.textContent = exams.filter((e) => !e.isHidden).length;
-    }
-
+    if (emptyStateContainer) emptyStateContainer.innerHTML = filtered.length ? "" : '<div class="p-4 text-center text-muted">No exams found for your current filters.</div>';
+    if (activeExamsCountEl) activeExamsCountEl.textContent = exams.filter((exam) => !exam.isHidden && !exam.isDeleted).length;
     updateDashboardStats();
   };
 
-  // ==========================================
-  // MODAL CONTROLS & EVENT HANDLERS
-  // ==========================================
-  const openModal = (modal) => modal && modal.classList.remove("hidden");
-  const closeModal = (modal) => modal && modal.classList.add("hidden");
+  const nextId = (prefix, collection) => {
+    const max = collection.reduce((highest, item) => {
+      const match = String(item.id || "").match(/(\d+)$/);
+      return Math.max(highest, match ? Number(match[1]) : 0);
+    }, 0);
+    return `${prefix}${String(max + 1).padStart(3, "0")}`;
+  };
 
-  document.querySelectorAll(".closeModal").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      closeModal(examModal);
-      closeModal(gradesModal);
-    });
+  document.querySelectorAll(".closeModal").forEach((button) => button.addEventListener("click", () => {
+    closeModal(examModal);
+    closeModal(gradesModal);
+  }));
+
+  btnOpenCreateModal?.addEventListener("click", () => {
+    examForm?.reset();
+    if (examIdInput) examIdInput.value = "";
+    if (modalTitle) modalTitle.textContent = "Create New Exam";
+    openModal(examModal);
   });
 
-  if (btnOpenCreateModal) {
-    btnOpenCreateModal.addEventListener("click", () => {
-      examForm.reset();
-      examIdInput.value = "";
-      modalTitle.textContent = "Create New Exam";
+  examForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const id = examIdInput?.value.trim();
+    const title = examTitleInput?.value.trim();
+    const classId = examClassSelect?.value;
+    const description = examDescInput?.value.trim();
+    const date = examDateInput?.value;
+    const totalMarks = Number(examMarksInput?.value);
+    if (!title || !classId || !date || !Number.isFinite(totalMarks) || totalMarks <= 0) return;
+
+    const classRecord = classMap.get(classId);
+    const subjectId = classRecord?.subjectId || null;
+
+    if (id) {
+      const target = exams.find((exam) => exam.id === id);
+      if (target) Object.assign(target, { title, classId, subjectId, description, date, totalMarks });
+      upsertTeacherNotification(target || { id, title, classId, date }, "updated");
+    } else {
+      const newExam = {
+        id: nextId("EX", read("exams")),
+        title,
+        description,
+        teacherId: teacher.id,
+        classId,
+        subjectId,
+        date,
+        totalMarks,
+        isHidden: false,
+      };
+      exams.push(newExam);
+      upsertTeacherNotification(newExam, "scheduled");
+    }
+
+    saveExams();
+    closeModal(examModal);
+    renderExams();
+  });
+
+  examsTableBody?.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-id]");
+    if (!button) return;
+    const id = button.dataset.id;
+    const exam = exams.find((item) => item.id === id);
+    if (!exam) return;
+
+    if (button.classList.contains("btn-delete-exam")) {
+      exam.isHidden = true;
+      upsertTeacherNotification(exam, "archived");
+      saveExams();
+      renderExams();
+      return;
+    }
+
+    if (button.classList.contains("btn-edit-exam")) {
+      if (examIdInput) examIdInput.value = exam.id;
+      if (examTitleInput) examTitleInput.value = exam.title || "";
+      if (examClassSelect) examClassSelect.value = exam.classId || "";
+      if (examDescInput) examDescInput.value = exam.description || "";
+      if (examDateInput) examDateInput.value = exam.date || "";
+      if (examMarksInput) examMarksInput.value = exam.totalMarks || "";
+      if (modalTitle) modalTitle.textContent = "Edit Exam";
       openModal(examModal);
-    });
-  }
+      return;
+    }
 
-  if (examForm) {
-    examForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const id = examIdInput.value;
-      const title = examTitleInput.value.trim();
-      const classId = examClassSelect.value;
-      const description = examDescInput.value.trim();
-      const date = examDateInput.value;
-      const totalMarks = parseInt(examMarksInput.value, 10);
-
-      if (id) {
-        const index = exams.findIndex((ex) => ex.id === id);
-        if (index !== -1) {
-          exams[index] = {
-            ...exams[index],
-            title,
-            classId,
-            description,
-            date,
-            totalMarks,
-          };
-        }
-      } else {
-        const newId = `EX${String(exams.length + 1).padStart(3, "0")}`;
-        exams.push({
-          id: newId,
-          title,
-          classId,
-          description,
-          date,
-          totalMarks,
-          grades: {},
-          isHidden: false,
-        });
+    if (button.classList.contains("btn-enter-grades")) {
+      currentGradeExamId = exam.id;
+      const cls = classMap.get(exam.classId);
+      const roster = classStudents(exam.classId);
+      const map = gradeMapForExam(exam.id);
+      if (gradesModalTitle) gradesModalTitle.textContent = `Grades: ${exam.title}`;
+      if (gradesModalSubtitle) gradesModalSubtitle.textContent = cls?.name || "";
+      if (maxMarksLabel) maxMarksLabel.textContent = String(exam.totalMarks || 0);
+      if (gradesTableBody) {
+        gradesTableBody.innerHTML = roster.length ? roster.map((student) => {
+          const mark = map.has(student.id) ? map.get(student.id) : "";
+          return `<tr>
+            <td>${escapeHtml(student.id)}</td>
+            <td>${escapeHtml(student.fullName)}</td>
+            <td><input type="number" class="form-control grade-input" data-student-id="${escapeHtml(student.id)}" min="0" max="${Number(exam.totalMarks || 0)}" value="${mark}" placeholder="0 - ${Number(exam.totalMarks || 0)}"></td>
+          </tr>`;
+        }).join("") : '<tr><td colspan="3" class="text-center">No students found in this class.</td></tr>';
       }
+      openModal(gradesModal);
+    }
+  });
 
-      saveExams();
-      renderExams();
-
-      // Trigger notification check immediately when new exam is created/edited
-      renderHeaderNotifications();
-
-      closeModal(examModal);
-    });
-  }
-
-  if (examsTableBody) {
-    examsTableBody.addEventListener("click", (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
-
-      const examId = btn.getAttribute("data-id");
-
-      if (btn.classList.contains("btn-delete-exam")) {
-        const exam = exams.find((ex) => ex.id === examId);
-        if (exam) {
-          exam.isHidden = true;
-          saveExams();
-          renderExams();
-          renderHeaderNotifications();
-        }
+  gradesForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const exam = exams.find((item) => item.id === currentGradeExamId);
+    if (!exam) return;
+    const max = Number(exam.totalMarks || 0);
+    gradesTableBody?.querySelectorAll(".grade-input").forEach((input) => {
+      const studentId = input.dataset.studentId;
+      const value = input.value.trim();
+      const existingIndex = grades.findIndex((grade) => grade.examId === exam.id && grade.studentId === studentId);
+      if (value === "") {
+        if (existingIndex >= 0) grades.splice(existingIndex, 1);
+        return;
       }
-
-      if (btn.classList.contains("btn-edit-exam")) {
-        const exam = exams.find((ex) => ex.id === examId);
-        if (!exam) return;
-
-        examIdInput.value = exam.id;
-        examTitleInput.value = exam.title;
-        examClassSelect.value = exam.classId;
-        examDescInput.value = exam.description;
-        examDateInput.value = exam.date;
-        examMarksInput.value = exam.totalMarks;
-
-        modalTitle.textContent = "Edit Exam";
-        openModal(examModal);
-      }
-
-      if (btn.classList.contains("btn-enter-grades")) {
-        const exam = exams.find((ex) => ex.id === examId);
-        if (!exam) return;
-
-        currentGradeExamId = exam.id;
-        const cls = classes.find((c) => c.id === exam.classId);
-        const classStudents = students[exam.classId] || [];
-
-        gradesModalTitle.textContent = `Grades: ${exam.title}`;
-        gradesModalSubtitle.textContent = cls ? cls.name : "";
-        maxMarksLabel.textContent = exam.totalMarks;
-
-        gradesTableBody.innerHTML = "";
-
-        if (classStudents.length === 0) {
-          gradesTableBody.innerHTML =
-            '<tr><td colspan="3" class="text-center">No students found in this class.</td></tr>';
-        } else {
-          classStudents.forEach((stu) => {
-            const currentMark =
-              exam.grades && exam.grades[stu.id] !== undefined
-                ? exam.grades[stu.id]
-                : "";
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td>${stu.id}</td>
-              <td>${stu.name}</td>
-              <td>
-                <input 
-                  type="number" 
-                  class="form-control grade-input" 
-                  data-student-id="${stu.id}" 
-                  min="0" 
-                  max="${exam.totalMarks}" 
-                  value="${currentMark}" 
-                  placeholder="0 - ${exam.totalMarks}" 
-                />
-              </td>
-            `;
-            gradesTableBody.appendChild(tr);
-          });
-        }
-
-        openModal(gradesModal);
-      }
+      const mark = Math.max(0, Math.min(max, Number(value)));
+      if (!Number.isFinite(mark)) return;
+      if (existingIndex >= 0) grades[existingIndex].mark = mark;
+      else grades.push({ id: nextId("GR", grades), examId: exam.id, studentId, mark });
     });
-  }
+    saveGrades();
+    closeModal(gradesModal);
+    renderExams();
+  });
 
-  if (gradesForm) {
-    gradesForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (!currentGradeExamId) return;
+  searchInput?.addEventListener("input", renderExams);
+  filterClassSelect?.addEventListener("change", renderExams);
 
-      const exam = exams.find((ex) => ex.id === currentGradeExamId);
-      if (!exam) return;
-
-      const gradeInputs = gradesTableBody.querySelectorAll(".grade-input");
-      exam.grades = exam.grades || {};
-
-      gradeInputs.forEach((input) => {
-        const stuId = input.getAttribute("data-student-id");
-        const val = input.value.trim();
-        if (val !== "") {
-          exam.grades[stuId] = Number(val);
-        } else {
-          delete exam.grades[stuId];
-        }
-      });
-
-      saveExams();
-      renderExams();
-      closeModal(gradesModal);
-    });
-  }
-
-  if (searchInput) searchInput.addEventListener("input", renderExams);
-  if (filterClassSelect)
-    filterClassSelect.addEventListener("change", renderExams);
-
-  // Setup Bell Dropdown Events
-  const bellBtn = document.getElementById("notification-bell-btn");
-  const dropdown = document.getElementById("notification-dropdown");
-  const markAllBtn = document.getElementById("mark-all-read-btn");
-
-  if (bellBtn && dropdown) {
-    bellBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle("hidden");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!dropdown.contains(e.target) && e.target !== bellBtn) {
-        dropdown.classList.add("hidden");
-      }
-    });
-  }
-
-  if (markAllBtn) {
-    markAllBtn.addEventListener("click", () => {
-      const notifications = NotificationService.getNotifications();
-      notifications.forEach((n) => (n.isRead = true));
-      NotificationService.saveNotifications(notifications);
-      renderHeaderNotifications();
-    });
-  }
-
+  ensureUpcomingExamNotifications();
   populateClassDropdowns();
   renderExams();
-
-  // Run notification check immediately on page load
-  renderHeaderNotifications();
 });
-
-// ==========================================
-// NOTIFICATION SERVICE & RENDER LOGIC
-// ==========================================
-const NotificationService = {
-  getNotifications() {
-    return JSON.parse(localStorage.getItem("edu_notifications")) || [];
-  },
-
-  saveNotifications(list) {
-    localStorage.setItem("edu_notifications", JSON.stringify(list));
-  },
-
-  checkUpcomingExamAlerts() {
-    const exams = JSON.parse(localStorage.getItem("edu_exams")) || [];
-    const notifications = this.getNotifications();
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let newNotificationsAdded = false;
-
-    exams.forEach((exam) => {
-      if (!exam.date || !exam.classId || exam.isHidden || exam.isDeleted)
-        return;
-
-      const [year, month, day] = exam.date.split("-").map(Number);
-      const examDate = new Date(year, month - 1, day);
-      examDate.setHours(0, 0, 0, 0);
-
-      const diffTime = examDate.getTime() - today.getTime();
-      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-      // Trigger notification if within 0 to 3 days
-      if (diffDays >= 0 && diffDays <= 3) {
-        // ONE unique alert per exam
-        const alertUniqueId = `ALERT_3DAY_${exam.id}`;
-        const alreadyExists = notifications.some(
-          (n) => n.alertKey === alertUniqueId,
-        );
-
-        if (!alreadyExists) {
-          let timeLabel = `in ${diffDays} days`;
-          if (diffDays === 0) timeLabel = "today";
-          if (diffDays === 1) timeLabel = "tomorrow";
-
-          notifications.unshift({
-            id: "NOT_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-            alertKey: alertUniqueId,
-            classId: exam.classId,
-            type: "UpcomingAlert",
-            relatedId: exam.id,
-            text: `Reminder: Upcoming exam "${exam.title}" is scheduled ${timeLabel} (${exam.date}).`,
-            date: new Date().toISOString().split("T")[0],
-            isRead: false,
-          });
-
-          newNotificationsAdded = true;
-        }
-      }
-    });
-
-    if (newNotificationsAdded) {
-      this.saveNotifications(notifications);
-    }
-  },
-};
-
-const renderHeaderNotifications = () => {
-  NotificationService.checkUpcomingExamAlerts();
-  const notifications = NotificationService.getNotifications();
-
-  const badge = document.getElementById("notification-badge");
-  const listContainer = document.getElementById("notification-list");
-
-  if (!badge || !listContainer) return;
-
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
-
-  if (unreadCount > 0) {
-    badge.textContent = unreadCount > 99 ? "99+" : unreadCount;
-    badge.classList.remove("hidden");
-  } else {
-    badge.textContent = "";
-    badge.classList.add("hidden");
-  }
-
-  listContainer.innerHTML = "";
-  if (notifications.length === 0) {
-    listContainer.innerHTML =
-      '<div class="p-3 text-center text-muted small">No notifications yet.</div>';
-  } else {
-    notifications.slice(0, 10).forEach((n) => {
-      const item = document.createElement("div");
-      item.className = `notif-item ${!n.isRead ? "unread" : ""} ${n.type === "UpcomingAlert" ? "alert" : ""}`;
-
-      const icon =
-        n.type === "UpcomingAlert"
-          ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-          : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
-
-      item.innerHTML = `
-        <div class="notif-icon-box">${icon}</div>
-        <div class="notif-content">
-          <div class="notif-text">${n.text}</div>
-          <div class="notif-date">${n.date}</div>
-        </div>
-      `;
-
-      item.addEventListener("click", () => {
-        const currentNotifs = NotificationService.getNotifications();
-        const target = currentNotifs.find((item) => item.id === n.id);
-        if (target) {
-          target.isRead = true;
-          NotificationService.saveNotifications(currentNotifs);
-          renderHeaderNotifications();
-        }
-      });
-
-      listContainer.appendChild(item);
-    });
-  }
-};

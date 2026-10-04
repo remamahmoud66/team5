@@ -336,7 +336,7 @@ const UI = {
 // login.html is not built yet, so requireAuth() would redirect to a page
 // that does not exist. While this flag is true, the first teacher (T001)
 // is logged in automatically. Set it to FALSE as soon as login.html works.
-const DEV_AUTO_LOGIN = true;
+const DEV_AUTO_LOGIN = false;
 
 const AuthService = {
   // Returns the teacher or null. Saves the teacher in sessionStorage.
@@ -541,7 +541,6 @@ const Layout = {
     document.querySelectorAll(".sidebar .nav-link").forEach((link) => {
       const hash = link.getAttribute("href");
       if (NAV_ROUTES[hash]) link.setAttribute("href", NAV_ROUTES[hash]);
-      link.classList.toggle("active", hash === activeHash);
     });
 
     // Breadcrumb
@@ -557,7 +556,7 @@ const Layout = {
     if (avatarEl) avatarEl.textContent = UI.initials(user.fullName);
 
     // Notification bell in the header
-    HeaderNotifications.init();
+    if (!window.EvolviaApp) HeaderNotifications.init();
 
     // Logout (the template moved it from the header to the sidebar;
     // this selector finds it in either place)
