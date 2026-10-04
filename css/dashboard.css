@@ -400,11 +400,8 @@ button {
 .breadcrumb span {
     margin: 0 5px;
     color: #aaa6a0;
-    background-color: var(--color-warning-bg);
     color: var(--color-accent-text);
     padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
     font-weight: 600;
 }
 
@@ -702,6 +699,7 @@ button {
     margin-bottom: var(--space-lg);
 
     padding: 20px 24px;
+    background-color: var(--color-white);
 }
 
 
@@ -783,6 +781,7 @@ button {
 
 .attendance-card {
     min-height: 390px;
+    background-color: var(--color-white);
 }
 
 
@@ -984,6 +983,7 @@ button {
 
 .class-performance-card {
     margin-top: var(--space-lg);
+    background-color: var(--color-white);
 }
 
 

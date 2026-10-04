@@ -1,4 +1,4 @@
-import { getTeachers ,  getCurrentTeacher } from './data.js';
+import { getTeachers, setCurrentTeacher } from './data.js';
 
 const loginForm = document.querySelector('.login-form');
 const email = document.getElementById('email');
@@ -37,9 +37,7 @@ loginForm.addEventListener('submit' , (event)=>{
     localStorage.removeItem('currentTeacher');
     sessionStorage.removeItem('currentTeacher');
 
-    const storage = rememberMe.checked ? localStorage : sessionStorage
-      
-    storage.setItem('currentTeacher', JSON.stringify(teacherData));
+    setCurrentTeacher(teacherData, rememberMe.checked);
 
     notyf.success('Login successful!');
 

@@ -366,7 +366,7 @@ a {
 
 .user-name {
   font-size: var(--font-size-sm);
-  font-weight: 700;
+  font-weight: 500;
 
   color: var(--color-ink);
 

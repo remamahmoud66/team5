@@ -1,0 +1,327 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>EVOLVIA - Notifications</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link href="../css/App.css" rel="stylesheet" />
+    <link href="../css/dashboard.css" rel="stylesheet" />
+    <link href="../css/profile.css" rel="stylesheet" />
+    <link href="../css/site.css" rel="stylesheet" />
+    <style>
+      .notifications-page {
+        padding: 32px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .notifications-card {
+        background: var(--color-white);
+        border: 1px solid var(--color-border);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+      .notifications-toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .notifications-list-full {
+        display: flex;
+        flex-direction: column;
+      }
+      .notification-row {
+        display: flex;
+        gap: 14px;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--color-border);
+        text-decoration: none;
+        color: inherit;
+      }
+      .notification-row.unread {
+        background: rgba(232, 163, 61, 0.08);
+      }
+      .notification-row:hover {
+        background: var(--color-bg);
+      }
+      .notification-row:last-child {
+        border-bottom: 0;
+      }
+      .notification-row .notif-icon-box {
+        margin-top: 2px;
+      }
+      .notification-copy {
+        flex: 1;
+        min-width: 0;
+      }
+      .notification-copy strong {
+        display: block;
+        margin-bottom: 3px;
+      }
+      .notification-copy p {
+        margin: 0 0 4px;
+      }
+      .notification-meta {
+        font-size: 11px;
+        color: var(--color-muted);
+      }
+      .notifications-empty {
+        padding: 48px 20px;
+        text-align: center;
+        color: var(--color-muted);
+      }
+      @media (max-width: 640px) {
+        .notifications-page {
+          padding: 18px 12px;
+        }
+        .notifications-toolbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div>
+        <!-- Brand -->
+        <div class="brand-header">
+          <div class="brand-icon">
+            <img alt="" src="../assets/imgs//logo.png" />
+          </div>
+          <div class="brand-text">
+            EVOLVIA
+            <span class="brand-sub">Academy System</span>
+          </div>
+        </div>
+        <!-- Navigation -->
+        <nav class="nav-menu">
+          <div class="nav-section-title">Main Navigation</div>
+          <!-- Dashboard -->
+          <a class="nav-link" href="./dashboard.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
+              ></path>
+            </svg>
+            Dashboard
+          </a>
+          <!-- Students -->
+          <a class="nav-link" href="./students.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"
+              ></path>
+            </svg>
+            Students
+          </a>
+          <!-- Subjects -->
+          <a class="nav-link" href="./subjects.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M4 4h16v2H4V4zm0 4h16v2H4V8zm0 4h10v2H4v-2zm0 4h10v2H4v-2z"
+              ></path>
+            </svg>
+            Subjects
+          </a>
+          <!-- Classes -->
+          <a class="nav-link" href="./classes.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4l7 3.82 7-3.82v-4L12 17l-7-3.82z"
+              ></path>
+            </svg>
+            Classes
+          </a>
+          <!-- Homework -->
+          <a class="nav-link active" href="./homework.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
+              ></path>
+            </svg>
+            Homework
+          </a>
+          <!-- Exams -->
+          <a class="nav-link" href="./exams.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm3-4H7v-2h8v2zm0-4H7V7h8v2z"
+              ></path>
+            </svg>
+            Exams
+          </a>
+          <!-- Marks -->
+          <a class="nav-link" href="./exam-marks.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.11.89 2 2 2h14c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"
+              ></path>
+            </svg>
+            Marks
+          </a>
+          <!-- Attendance -->
+          <a class="nav-link" href="./attendance.html">
+            <svg viewbox="0 0 24 24">
+              <path
+                d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.11.89 2 2 2h14c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"
+              ></path>
+            </svg>
+            Attendance
+          </a>
+          <a class="nav-link" href="./notifications.html"
+            ><svg viewbox="0 0 24 24">
+              <path
+                d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-5v-1l-2-2v-4a5 5 0 0 0-4-4.9V4a1 1 0 1 0-2 0v1.1A5 5 0 0 0 7 10v4l-2 2v1h14z"
+              ></path></svg
+            >Notifications</a
+          >
+        </nav>
+      </div>
+      <a class="logout-btn" href="./login.html" id="logoutBtn">
+        <svg fill="currentColor" height="14" viewbox="0 0 24 24" width="14">
+          <path
+            d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+          ></path>
+        </svg>
+
+        Log Out
+      </a>
+    </aside>
+    <div class="content-wrapper">
+      <header class="header">
+        <nav class="breadcrumb">
+          <a href="./dashboard.html">Dashboard</a
+          ><span class="breadcrumb-separator">/</span
+          ><span class="breadcrumb-current">Notifications</span>
+        </nav>
+        <div class="header-actions">
+          <div class="user-profile">
+            <div class="avatar" id="avatar"></div>
+            <div class="user-info">
+              <span class="user-name" id="profileName"></span
+              ><span class="user-role">Teacher</span>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main class="notifications-page">
+        <div class="notifications-card">
+          <div class="notifications-toolbar">
+            <div>
+              <h1>Notifications</h1>
+              <p>Review updates, reminders and activity from your workspace.</p>
+            </div>
+            <button
+              class="btn btn-secondary"
+              id="markAllNotifications"
+              type="button"
+            >
+              Mark all as read
+            </button>
+          </div>
+          <div class="notifications-list-full" id="notificationsList"></div>
+        </div>
+      </main>
+    </div>
+    <script src="../js/site.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var user = window.EvolviaApp.getUser(),
+          list = window.EvolviaApp.read("notifications")
+            .filter(function (n) {
+              return n.teacherId === user.id;
+            })
+            .sort(function (a, b) {
+              return (
+                String(b.date).localeCompare(String(a.date)) ||
+                String(b.id).localeCompare(String(a.id))
+              );
+            });
+        var students = window.EvolviaApp.read("students"),
+          box = document.getElementById("notificationsList");
+        function render() {
+          list = window.EvolviaApp.read("notifications")
+            .filter(function (n) {
+              return n.teacherId === user.id;
+            })
+            .sort(function (a, b) {
+              return (
+                String(b.date).localeCompare(String(a.date)) ||
+                String(b.id).localeCompare(String(a.id))
+              );
+            });
+          if (!list.length) {
+            box.innerHTML =
+              '<div class="notifications-empty">No notifications yet.</div>';
+            return;
+          }
+          box.innerHTML = list
+            .map(function (n) {
+              var s = students.find(function (x) {
+                return x.id === n.studentId;
+              });
+              var target = n.studentId
+                ? "./student-details.html?id=" +
+                  encodeURIComponent(n.studentId) +
+                  "#notifications"
+                : "./notifications.html";
+              return (
+                '<a class="notification-row ' +
+                (n.isRead ? "" : "unread") +
+                '" href="' +
+                target +
+                '" data-id="' +
+                n.id +
+                '"><span class="notif-icon-box">🔔</span><span class="notification-copy"><strong>' +
+                (s ? s.fullName : n.type) +
+                "</strong><p>" +
+                n.text +
+                '</p><span class="notification-meta">' +
+                n.type +
+                " · " +
+                n.date +
+                (n.isRead ? "" : " · Unread") +
+                "</span></span></a>"
+              );
+            })
+            .join("");
+        }
+        box.addEventListener("click", function (e) {
+          var row = e.target.closest("[data-id]");
+          if (!row) return;
+          var all = window.EvolviaApp.read("notifications");
+          var n = all.find(function (x) {
+            return x.id === row.dataset.id;
+          });
+          if (n) {
+            n.isRead = true;
+            window.EvolviaApp.write("notifications", all);
+          }
+        });
+        document
+          .getElementById("markAllNotifications")
+          .addEventListener("click", function () {
+            var all = window.EvolviaApp.read("notifications");
+            all.forEach(function (n) {
+              if (n.teacherId === user.id) n.isRead = true;
+            });
+            window.EvolviaApp.write("notifications", all);
+            render();
+            window.EvolviaApp.renderNotifications(user);
+          });
+        render();
+      });
+    </script>
+  </body>
+</html>

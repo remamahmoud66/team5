@@ -1,265 +1,212 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>EVOLVIA - Profile</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="../css/App.css" />
-    <link rel="stylesheet" href="../css/dashboard.css" />
-    <link rel="stylesheet" href="../css/profile.css" />
-  </head>
-
-  <body>
-    <aside class="sidebar">
-      <div>
-        <div class="brand-header">
-          <div class="brand-icon">
-            <img src="../assets/imgs/logo.png" alt="EVOLVIA Logo" />
-          </div>
-
-          <div class="brand-text">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EVOLVIA - Profile</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="../css/App.css" rel="stylesheet"/>
+<link href="../css/dashboard.css" rel="stylesheet"/>
+<link href="../css/profile.css" rel="stylesheet"/>
+<link href="../css/site.css" rel="stylesheet"/></head>
+<body>
+<aside class="sidebar">
+<div>
+<div class="brand-header">
+<div class="brand-icon">
+<img alt="EVOLVIA Logo" src="../assets/imgs/logo.png"/>
+</div>
+<div class="brand-text">
             EVOLVIA
 
             <span class="brand-sub"> Academy System </span>
-          </div>
-        </div>
-
-        <nav class="nav-menu">
-          <div class="nav-section-title">Main Navigation</div>
-
-          <a
-            href="./dashboard.html"
-            class="nav-link active"
-            data-page="dashboard"
-          >
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
-              />
-            </svg>
-            <span>Dashboard</span>
-          </a>
-
-          <a href="./students.html" class="nav-link" data-page="students">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"
-              />
-            </svg>
-            <span>Students</span>
-          </a>
-
-          <a href="./subjects.html" class="nav-link" data-page="subjects">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M4 4h16v2H4V4zm0 4h16v2H4V8zm0 4h10v2H4v-2zm0 4h10v2H4v-2z"
-              />
-            </svg>
-            <span>Subjects</span>
-          </a>
-
-          <a href="./classes.html" class="nav-link" data-page="classes">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4l7 3.82 7-3.82v-4L12 17l-7-3.82z"
-              />
-            </svg>
-            <span>Classes</span>
-          </a>
-
-          <a href="./homework.html" class="nav-link" data-page="homework">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
-              />
-            </svg>
-            <span>Homework</span>
-          </a>
-
-          <a href="./exams.html" class="nav-link" data-page="exams">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm3-4H7v-2h8v2zm0-4H7V7h8v2z"
-              />
-            </svg>
-            <span>Exams</span>
-          </a>
-
-          <a href="./exam-marks.html" class="nav-link" data-page="marks">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.11.89 2 2 2h14c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"
-              />
-            </svg>
+</div>
+</div>
+<nav class="nav-menu">
+<div class="nav-section-title">Main Navigation</div>
+<a class="nav-link" data-page="dashboard" href="./dashboard.html">
+<svg viewbox="0 0 24 24">
+<path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"></path>
+</svg>
+<span>Dashboard</span>
+</a>
+<a class="nav-link" data-page="students" href="./students.html">
+<svg viewbox="0 0 24 24">
+<path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
+</svg>
+<span>Students</span>
+</a>
+<a class="nav-link" data-page="subjects" href="./subjects.html">
+<svg viewbox="0 0 24 24">
+<path d="M4 4h16v2H4V4zm0 4h16v2H4V8zm0 4h10v2H4v-2zm0 4h10v2H4v-2z"></path>
+</svg>
+<span>Subjects</span>
+</a>
+<a class="nav-link" data-page="classes" href="./classes.html">
+<svg viewbox="0 0 24 24">
+<path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4l7 3.82 7-3.82v-4L12 17l-7-3.82z"></path>
+</svg>
+<span>Classes</span>
+</a>
+<a class="nav-link" data-page="homework" href="./homework.html">
+<svg viewbox="0 0 24 24">
+<path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"></path>
+</svg>
+<span>Homework</span>
+</a>
+<a class="nav-link" data-page="exams" href="./exams.html">
+<svg viewbox="0 0 24 24">
+<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm3-4H7v-2h8v2zm0-4H7V7h8v2z"></path>
+</svg>
+<span>Exams</span>
+</a>
+<a class="nav-link" data-page="marks" href="./exam-marks.html">
+<svg viewbox="0 0 24 24">
+<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.11.89 2 2 2h14c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"></path>
+</svg>
             Marks
           </a>
-          <a href="./attendance.html" class="nav-link" data-page="attendance">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.11.89 2 2 2h14c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"
-              />
-            </svg>
-            <span>Attendance</span>
-          </a>
-        </nav>
-      </div>
-
-      <div class="sidebar-logout">
-        <a href="#" class="logout-btn" id="logoutBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-            />
-          </svg>
-          <span>Log Out</span>
-        </a>
-      </div>
-    </aside>
-
-    <div class="content-wrapper">
-      <header class="header">
-        <nav class="breadcrumb">
-          <a href="./dashboard.html">Dashboard</a>
-          <span class="breadcrumb-separator">/</span>
-          <span class="breadcrumb-current">Profile</span>
-        </nav>
-
-        <div class="header-actions">
-          <button
-            type="button"
-            class="notification-btn"
-            aria-label="Notifications"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-5v-1l-2-2v-4a5 5 0 0 0-4-4.9V4a1 1 0 1 0-2 0v1.1A5 5 0 0 0 7 10v4l-2 2v1h14z"
-              />
-            </svg>
-            <span class="notification-dot"></span>
-          </button>
-
-          <a href="./profile.html" class="user-profile">
-            <div class="avatar" id="avatar"></div>
-            <div class="user-info">
-              <span class="user-name" id="profileName"></span>
-              <span class="user-role">Teacher</span>
-            </div>
-          </a>
-        </div>
-      </header>
-
-      <main id="app">
-        <!-- VIEW MODE -->
-        <section class="profile-page" id="profileView">
-          <div class="profile-header">
-            <div class="profile-avatar" id="profileAvatar"></div>
-            <div class="profile-title">
-              <h1 id="profileFullName"></h1>
-              <p>Teacher</p>
-            </div>
-            <button class="edit-profile-btn" id="editProfileBtn">
+<a class="nav-link" data-page="attendance" href="./attendance.html">
+<svg viewbox="0 0 24 24">
+<path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.11.89 2 2 2h14c1.11 0 2-.9 2-2V6c0-1.11-.89-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"></path>
+</svg>
+<span>Attendance</span>
+</a>
+<a class="nav-link" href="./notifications.html"><svg viewbox="0 0 24 24"><path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-5v-1l-2-2v-4a5 5 0 0 0-4-4.9V4a1 1 0 1 0-2 0v1.1A5 5 0 0 0 7 10v4l-2 2v1h14z"></path></svg>Notifications</a></nav>
+</div>
+<div class="sidebar-logout">
+<a class="logout-btn" href="./login.html" id="logoutBtn">
+<svg fill="currentColor" height="16" viewbox="0 0 24 24" width="16">
+<path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
+</svg>
+<span>Log Out</span>
+</a>
+</div>
+</aside>
+<div class="content-wrapper">
+<header class="header">
+<nav class="breadcrumb">
+<a href="./dashboard.html">Dashboard</a>
+<span class="breadcrumb-separator">/</span>
+<span class="breadcrumb-current">Profile</span>
+</nav>
+<div class="header-actions">
+<button aria-label="Notifications" class="notification-btn" type="button">
+<svg fill="currentColor" height="22" viewbox="0 0 24 24" width="22">
+<path d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22zm7-5v-1l-2-2v-4a5 5 0 0 0-4-4.9V4a1 1 0 1 0-2 0v1.1A5 5 0 0 0 7 10v4l-2 2v1h14z"></path>
+</svg>
+<span class="notification-dot"></span>
+</button>
+<a class="user-profile" href="./profile.html">
+<div class="avatar" id="avatar"></div>
+<div class="user-info">
+<span class="user-name" id="profileName"></span>
+<span class="user-role">Teacher</span>
+</div>
+</a>
+</div>
+</header>
+<main id="app">
+<!-- VIEW MODE -->
+<section class="profile-page" id="profileView">
+<div class="profile-header">
+<div class="profile-avatar" id="profileAvatar"></div>
+<div class="profile-title">
+<h1 id="profileFullName"></h1>
+<p>Teacher</p>
+</div>
+<button class="edit-profile-btn" id="editProfileBtn">
               Edit Profile
             </button>
-          </div>
-
-          <div class="profile-content">
-            <div class="profile-card">
-              <div class="card-header">
-                <h2>Personal Information</h2>
-                <p>Your personal account information</p>
-              </div>
-              <div class="profile-grid">
-                <div class="profile-field">
-                  <span>Full Name</span>
-                  <strong id="fieldFullName"></strong>
-                </div>
-                <div class="profile-field">
-                  <span>Email Address</span>
-                  <strong id="fieldEmail"></strong>
-                </div>
-                <div class="profile-field">
-                  <span>Phone Number</span>
-                  <strong id="fieldPhone"></strong>
-                </div>
-                <div class="profile-field">
-                  <span>Role</span>
-                  <strong>Teacher</strong>
-                </div>
-                <div class="profile-field">
-                  <span>Department</span>
-                  <strong>Academic Affairs</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- EDIT MODE (hidden by default) -->
-        <section class="profile-page" id="profileEdit" style="display: none">
-          <div class="profile-header">
-            <div class="profile-avatar" id="editProfileAvatar"></div>
-            <div class="profile-title">
-              <h1>Edit Profile</h1>
-              <p>Update your personal information</p>
-            </div>
-          </div>
-
-          <div class="profile-content">
-            <div class="profile-card">
-              <div class="card-header">
-                <h2>Personal Information</h2>
-                <p>Update your account information</p>
-              </div>
-              <div class="profile-grid">
-                <div class="profile-field">
-                  <span>Full Name</span>
-                  <input type="text" id="fullNameInput" />
-                </div>
-                <div class="profile-field">
-                  <span>Email Address</span>
-                  <input type="email" id="emailInput" />
-                </div>
-                <div class="profile-field">
-                  <span>Phone Number</span>
-                  <input type="text" id="phoneInput" />
-                </div>
-                <div class="profile-field">
-                  <span>Role</span>
-                  <strong>Teacher</strong>
-                </div>
-                <div class="profile-field">
-                  <span>Department</span>
-                  <strong>Academic Affairs</strong>
-                </div>
-              </div>
-              <div class="profile-actions">
-                <button class="save-profile-btn" id="saveProfileBtn">
+</div>
+<div class="profile-content">
+<div class="profile-card">
+<div class="card-header">
+<h2>Personal Information</h2>
+<p>Your personal account information</p>
+</div>
+<div class="profile-grid">
+<div class="profile-field">
+<span>Full Name</span>
+<strong id="fieldFullName"></strong>
+</div>
+<div class="profile-field">
+<span>Email Address</span>
+<strong id="fieldEmail"></strong>
+</div>
+<div class="profile-field">
+<span>Phone Number</span>
+<strong id="fieldPhone"></strong>
+</div>
+<div class="profile-field">
+<span>Role</span>
+<strong>Teacher</strong>
+</div>
+<div class="profile-field">
+<span>Department</span>
+<strong>Academic Affairs</strong>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- EDIT MODE (hidden by default) -->
+<section class="profile-page" id="profileEdit" style="display: none">
+<div class="profile-header">
+<div class="profile-avatar" id="editProfileAvatar"></div>
+<div class="profile-title">
+<h1>Edit Profile</h1>
+<p>Update your personal information</p>
+</div>
+</div>
+<div class="profile-content">
+<div class="profile-card">
+<div class="card-header">
+<h2>Personal Information</h2>
+<p>Update your account information</p>
+</div>
+<div class="profile-grid">
+<div class="profile-field">
+<span>Full Name</span>
+<input id="fullNameInput" type="text"/>
+</div>
+<div class="profile-field">
+<span>Email Address</span>
+<input id="emailInput" type="email"/>
+</div>
+<div class="profile-field">
+<span>Phone Number</span>
+<input id="phoneInput" type="text"/>
+</div>
+<div class="profile-field">
+<span>Role</span>
+<strong>Teacher</strong>
+</div>
+<div class="profile-field">
+<span>Department</span>
+<strong>Academic Affairs</strong>
+</div>
+</div>
+<div class="profile-actions">
+<button class="save-profile-btn" id="saveProfileBtn">
                   Save Changes
                 </button>
-                <button class="cancel-profile-btn" id="cancelProfileBtn">
+<button class="cancel-profile-btn" id="cancelProfileBtn">
                   Cancel
                 </button>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer class="footer">
-        <div>© 2026 EVOLVIA Academy Learning System</div>
-        <div>Privacy Policy • Terms of Service</div>
-      </footer>
-    </div>
-
-    <script type="module" src="../js/pages/profile.js"></script>
-  </body>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="footer">
+<div>© 2026 EVOLVIA Academy Learning System</div>
+<div>Privacy Policy • Terms of Service</div>
+</footer>
+</div>
+<script src="../js/site.js"></script><script src="../js/pages/profile.js" type="module"></script>
+</body>
 </html>

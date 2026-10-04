@@ -336,7 +336,7 @@ const UI = {
 // login.html is not built yet, so requireAuth() would redirect to a page
 // that does not exist. While this flag is true, the first teacher (T001)
 // is logged in automatically. Set it to FALSE as soon as login.html works.
-const DEV_AUTO_LOGIN = true;
+const DEV_AUTO_LOGIN = false;
 
 const AuthService = {
   // Returns the teacher or null. Saves the teacher in sessionStorage.
@@ -541,7 +541,6 @@ const Layout = {
     document.querySelectorAll(".sidebar .nav-link").forEach((link) => {
       const hash = link.getAttribute("href");
       if (NAV_ROUTES[hash]) link.setAttribute("href", NAV_ROUTES[hash]);
-      link.classList.toggle("active", hash === activeHash);
     });
 
     // Breadcrumb
@@ -557,7 +556,7 @@ const Layout = {
     if (avatarEl) avatarEl.textContent = UI.initials(user.fullName);
 
     // Notification bell in the header
-    HeaderNotifications.init();
+    if (!window.EvolviaApp) HeaderNotifications.init();
 
     // Logout (the template moved it from the header to the sidebar;
     // this selector finds it in either place)
@@ -696,8 +695,10 @@ const StudentService = {
     const student = this.getById(studentId);
     if (!student) return null;
 
-    const subjects = Storage.getAll("subjects");
-    const allClasses = Storage.getAll("classes");
+    const user = AuthService.getCurrentUser();
+    const teacherId = user?.id || null;
+    const subjects = Storage.getAll("subjects").filter((x) => !x.teacherId || x.teacherId === teacherId);
+    const allClasses = Storage.getAll("classes").filter((x) => !x.teacherId || x.teacherId === teacherId);
     const subjectName = (id) => (subjects.find((s) => s.id === id) || {}).name || "—";
     const className = (id) => (allClasses.find((c) => c.id === id) || {}).name || "Deleted class";
     const newestFirst = (field) => (a, b) => String(b[field]).localeCompare(String(a[field])) || String(b.id).localeCompare(String(a.id));
@@ -709,7 +710,7 @@ const StudentService = {
 
     // Attendance
     const attendance = Storage.getAll("attendance")
-      .filter((a) => a.studentId === studentId)
+      .filter((a) => a.studentId === studentId && classes.some((c) => c.id === a.classId))
       .map((a) => ({ ...a, className: className(a.classId) }))
       .sort(newestFirst("date"));
     const countStatus = (status) => attendance.filter((a) => a.status === status).length;
@@ -720,7 +721,7 @@ const StudentService = {
     const rate = attendance.length ? Math.round(((present + late) / attendance.length) * 100) : null;
 
     // Homework (homework + THIS student's status)
-    const homeworks = Storage.getAll("homeworks");
+    const homeworks = Storage.getAll("homeworks").filter((h) => !h.teacherId || h.teacherId === teacherId);
     const homework = Storage.getAll("homeworkStatuses")
       .filter((s) => s.studentId === studentId)
       .map((s) => {
@@ -735,7 +736,7 @@ const StudentService = {
     const grades = Storage.getAll("grades").filter((g) => g.studentId === studentId);
     const classIds = classes.map((c) => c.id);
     const exams = Storage.getAll("exams")
-      .filter((ex) => classIds.includes(ex.classId) || grades.some((g) => g.examId === ex.id))
+      .filter((ex) => (!ex.teacherId || ex.teacherId === teacherId) && (classIds.includes(ex.classId) || grades.some((g) => g.examId === ex.id)))
       .map((ex) => {
         const grade = grades.find((g) => g.examId === ex.id);
         const mark = grade ? Number(grade.mark) : null;
@@ -755,12 +756,12 @@ const StudentService = {
       : null;
 
     const notes = Storage.getAll("notes")
-      .filter((n) => n.studentId === studentId)
+      .filter((n) => n.studentId === studentId && (!n.teacherId || n.teacherId === teacherId))
       .map((n) => ({ ...n, className: className(n.classId) }))
       .sort(newestFirst("createdAt"));
 
     const notifications = Storage.getAll("notifications")
-      .filter((n) => n.studentId === studentId)
+      .filter((n) => n.studentId === studentId && (!n.teacherId || n.teacherId === teacherId))
       .sort(newestFirst("date"));
 
     return {
@@ -1129,7 +1130,7 @@ const StudentDetailsPage = {
     UI.closeModal("noteModal");
     UI.toast("Note added successfully.");
     this.refresh();
-    HeaderNotifications.render(); // the new Note notification changes the bell badge
+    if (window.EvolviaApp) window.EvolviaApp.renderNotifications(AuthService.getCurrentUser()); else HeaderNotifications.render();
   }
 };
 

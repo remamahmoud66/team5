@@ -1,6 +1,6 @@
 :root {
         /* Colors */
-        --color-bg: #faf9f7;
+        --color-bg: #ffffff;
         --color-surface: #ffffff;
         --color-ink: #1f1c1b;
         --color-muted: #68666f;
@@ -475,7 +475,7 @@
 
         border-top: 1px solid var(--color-border);
 
-        background-color: var(--color-surface);
+        background-color: var(--color-white);
 
         font-size: var(--font-size-xs);
         color: var(--color-muted);
